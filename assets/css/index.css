@@ -1,0 +1,193 @@
+:root {
+    --pulse-navy: #102653;
+    --pulse-red: #e9253c;
+    --pulse-red-dark: #c91d32;
+    --pulse-text: #34415b;
+    --pulse-border: #e8edf5;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    color: var(--pulse-navy);
+    background: #fff;
+    font-family: "Playfair", Georgia, serif;
+}
+
+.site-header {
+    position: relative;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.96);
+    border-bottom: 1px solid var(--pulse-border);
+    box-shadow: 0 4px 20px rgba(16, 38, 83, 0.04);
+}
+
+.site-navbar {
+    min-height: 84px;
+    padding: 12px 0;
+}
+
+.site-navbar .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 32px;
+    color: var(--pulse-navy);
+    font-family: "Playfair", Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+}
+
+.site-navbar .brand:hover,
+.site-navbar .brand:focus {
+    color: var(--pulse-navy);
+}
+
+.brand-logo {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #fff;
+    object-fit: cover;
+    object-position: center 24%;
+}
+
+.site-navbar .navbar-nav {
+    gap: 10px;
+}
+
+.site-navbar .navbar-nav .nav-link {
+    padding: 10px 12px;
+    color: var(--pulse-text);
+    font-family: "Playfair", Georgia, serif;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: color 160ms ease;
+}
+
+.site-navbar .navbar-nav .nav-link:hover,
+.site-navbar .navbar-nav .nav-link:focus {
+    color: var(--pulse-red);
+}
+
+.site-navbar .navbar-nav .nav-try .nav-link {
+    color: var(--pulse-red);
+    font-weight: 700;
+}
+
+.site-navbar .navbar-nav .nav-try .nav-link:hover,
+.site-navbar .navbar-nav .nav-try .nav-link:focus {
+    color: var(--pulse-red-dark);
+}
+
+.site-navbar .nav-actions .btn {
+    display: inline-flex;
+    min-width: 98px;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 18px;
+    border-radius: 9px;
+    font-family: "Playfair", Georgia, serif;
+    font-size: 0.96rem;
+    font-weight: 700;
+    transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.site-navbar .btn-login {
+    border: 1px solid #cbd5e3;
+    background: #fff;
+    color: var(--pulse-navy);
+}
+
+.site-navbar .btn-login:hover,
+.site-navbar .btn-login:focus {
+    border-color: var(--pulse-navy);
+    background: #f5f7fb;
+    color: var(--pulse-navy);
+}
+
+.site-navbar .btn-signup {
+    border: 1px solid var(--pulse-red);
+    background: var(--pulse-red);
+    color: #fff;
+    box-shadow: 0 5px 14px rgba(233, 37, 60, 0.16);
+}
+
+.site-navbar .btn-signup:hover,
+.site-navbar .btn-signup:focus {
+    transform: translateY(-1px);
+    border-color: var(--pulse-red-dark);
+    background: var(--pulse-red-dark);
+    color: #fff;
+}
+
+.site-navbar .navbar-toggler {
+    padding: 7px 10px;
+    border-color: #dce4ef;
+    border-radius: 9px;
+}
+
+.site-navbar .navbar-toggler:focus {
+    box-shadow: 0 0 0 3px rgba(233, 37, 60, 0.15);
+}
+
+main {
+    min-height: calc(100vh - 84px);
+    background:
+        radial-gradient(ellipse at 8% 18%, rgba(70, 116, 222, 0.07), transparent 32%),
+        radial-gradient(ellipse at 92% 82%, rgba(233, 37, 60, 0.045), transparent 30%),
+        #fff;
+}
+
+@media (max-width: 991.98px) {
+    .site-navbar {
+        min-height: 72px;
+    }
+
+    .site-navbar .navbar-collapse {
+        padding: 12px 0 6px;
+        border-top: 1px solid var(--pulse-border);
+        margin-top: 12px;
+    }
+
+    .site-navbar .navbar-nav {
+        align-items: stretch !important;
+        gap: 2px;
+    }
+
+    .site-navbar .navbar-nav .nav-link {
+        padding: 10px 4px;
+    }
+
+    .site-navbar .nav-actions .btn {
+        width: 100%;
+        margin: 4px 0;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .brand-logo {
+        width: 44px;
+        height: 44px;
+    }
+
+    .site-navbar .brand {
+        gap: 8px;
+        font-size: 1.3rem;
+    }
+
+    main {
+        min-height: calc(100vh - 72px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}

@@ -1,0 +1,250 @@
+:root {
+    --auth-ink: #102653;
+    --auth-line: #dce4ef;
+    --auth-red: #e9253c;
+    --auth-red-hover: #c91d32;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    color: var(--auth-ink);
+    background:
+        radial-gradient(ellipse at 12% 38%, rgba(75, 119, 239, 0.1), transparent 34%),
+        radial-gradient(ellipse at 90% 86%, rgba(44, 183, 157, 0.1), transparent 32%),
+        #f5f7fb;
+    font-family: "Playfair", Georgia, serif;
+}
+
+.site-header {
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    border-bottom: 1px solid #e8edf5;
+}
+
+.site-navbar {
+    min-height: 78px;
+    padding: 10px 0;
+}
+
+.site-navbar .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--auth-ink);
+    font-family: "Playfair", Georgia, serif;
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+.site-navbar .brand:hover,
+.site-navbar .brand:focus {
+    color: var(--auth-ink);
+}
+
+.brand-logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 24%;
+}
+
+.site-navbar .navbar-nav {
+    gap: 8px;
+}
+
+.site-navbar .navbar-nav .nav-link {
+    padding: 10px 12px;
+    color: #34415b;
+    font-weight: 500;
+}
+
+.site-navbar .navbar-nav .nav-link:hover,
+.site-navbar .navbar-nav .nav-link:focus {
+    color: var(--auth-red);
+}
+
+.site-navbar .navbar-nav .nav-try .nav-link {
+    color: var(--auth-red);
+    font-weight: 700;
+}
+
+.site-navbar .nav-actions .btn {
+    display: inline-block;
+    min-width: 92px;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.site-navbar .btn-login {
+    border: 1px solid var(--auth-ink);
+    color: var(--auth-ink);
+}
+
+.site-navbar .btn-login:hover,
+.site-navbar .btn-login:focus {
+    background: #f1f4fa;
+    color: var(--auth-ink);
+}
+
+.site-navbar .btn-signup {
+    border: 1px solid var(--auth-red);
+    background: var(--auth-red);
+    color: #fff;
+}
+
+.site-navbar .btn-signup:hover,
+.site-navbar .btn-signup:focus {
+    border-color: var(--auth-red-hover);
+    background: var(--auth-red-hover);
+    color: #fff;
+}
+
+main {
+    display: grid;
+    flex: 1;
+    place-items: center;
+    padding: clamp(32px, 7vh, 72px) 16px;
+}
+
+.register-section,
+.login-section {
+    width: 100%;
+}
+
+.register-section .row,
+.login-section .row {
+    margin: 0;
+}
+
+.register-section .row > [class*="col-"],
+.login-section .row > [class*="col-"] {
+    width: min(100%, 500px);
+    max-width: 500px;
+    flex: 0 1 500px;
+    padding: clamp(26px, 5vw, 44px);
+    border: 1px solid rgba(220, 228, 239, 0.95);
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 24px 64px rgba(31, 51, 86, 0.12);
+}
+
+.register-section h2,
+.login-section h2 {
+    margin: 0 0 28px !important;
+    color: var(--auth-ink);
+    font-family: "Playfair", Georgia, serif;
+    font-size: clamp(1.65rem, 4vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.25;
+}
+
+.register-section form,
+.login-section form {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.register-section .mb-3,
+.login-section .mb-3 {
+    margin-bottom: 18px !important;
+}
+
+.register-section .form-label,
+.login-section .form-label {
+    display: block;
+    margin: 0 0 8px;
+    color: #34445c;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.register-section .form-control,
+.login-section .form-control {
+    min-height: 50px;
+    padding: 0 14px;
+    border: 1px solid var(--auth-line);
+    border-radius: 9px;
+    background: #fbfcfe;
+    color: var(--auth-ink);
+    font: 15px "Playfair", Georgia, serif;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.register-section .form-control::placeholder,
+.login-section .form-control::placeholder {
+    color: #9aa7b8;
+}
+
+.register-section .form-control:focus,
+.login-section .form-control:focus {
+    border-color: #5478db;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(53, 104, 232, 0.12);
+}
+
+.register-section .btn-primary,
+.login-section .btn-primary {
+    min-height: 50px;
+    margin-top: 6px;
+    border: 0;
+    border-radius: 9px;
+    background: var(--auth-red);
+    color: #fff;
+    font: 700 15px "Playfair", Georgia, serif;
+    box-shadow: 0 8px 18px rgba(233, 37, 60, 0.2);
+    transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.register-section .btn-primary:hover,
+.login-section .btn-primary:hover {
+    transform: translateY(-1px);
+    border-color: var(--auth-red-hover);
+    background: var(--auth-red-hover);
+    box-shadow: 0 11px 22px rgba(233, 37, 60, 0.25);
+}
+
+.register-section .btn-primary:focus,
+.login-section .btn-primary:focus {
+    border-color: var(--auth-red-hover);
+    background: var(--auth-red-hover);
+    box-shadow: 0 0 0 4px rgba(233, 37, 60, 0.18);
+}
+
+@media (max-width: 991.98px) {
+    .site-navbar .navbar-collapse {
+        padding-top: 12px;
+    }
+
+    .site-navbar .navbar-nav {
+        align-items: stretch !important;
+        gap: 2px;
+    }
+
+    .site-navbar .nav-actions .btn {
+        width: 100%;
+        margin: 4px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        padding: 28px 14px;
+    }
+
+    .register-section .row > [class*="col-"],
+    .login-section .row > [class*="col-"] {
+        border-radius: 16px;
+    }
+}
