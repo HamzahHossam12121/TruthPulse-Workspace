@@ -1,76 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TruthPulse — Sign Up</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- description -->
+    <meta name="description" content="TruthPulse is a AI model platform that provides accurate and reliable information on various topics.">
+    <link rel="icon" type="image/png" href="assets/imgs/my_logo.png">
     <!--bootstrap css-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- main css-->
     <link rel="stylesheet" href="assets/css/register.css">
     <!--fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap" rel="stylesheet">
-    <title>TruthPulse - Login</title>
+    <title>TruthPulse</title>
 </head>
-<body>
-    <header class="site-header">
-        <nav class="navbar navbar-expand-lg site-navbar" aria-label="Main navigation">
-            <div class="container">
-                <a class="navbar-brand brand" href="index.html" aria-label="TruthPulse home">
-                    <img class="brand-logo" src="assets/imgs/my_logo.png" alt="">
-                    <span>TruthPulse</span>
-                </a>
+<body class="auth-body">
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#mainNavigation" aria-controls="mainNavigation"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+  <div class="auth-container">
 
-                <div class="collapse navbar-collapse" id="mainNavigation">
-                    <ul class="navbar-nav ms-auto align-items-lg-center">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#about">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#contact">Contact</a>
-                        </li>
-                        <li class="nav-item nav-try">
-                            <a class="nav-link" href="#try">Try TruthPulse</a>
-                        </li>
-                        <li class="nav-item nav-actions">
-                            <a class="btn btn-login" href="login.html">Log in</a>
-                        </li>
-                        <li class="nav-item nav-actions">
-                            <a class="btn btn-signup" href="signup.html">Sign up</a>
-                        </li>
-                    </ul>
-                </div>
+    <!-- LEFT SIDE: branding panel -->
+    <div class="auth-side">
+      <a href="index.html" class="auth-side-brand">
+        <img
+          src="assets/imgs/my_logo.png"
+          alt="AI Verifier logo"
+          class="brand-logo"
+        />
+        <span>TruthPulse</span>
+      </a>
+
+      <div class="auth-side-content">
+        <h2 class="auth-side-title">
+          Welcome back.
+        </h2>
+        <p class="auth-side-lead">
+          Log in to continue your conversations and review past analyses.
+          Your history is waiting for you.
+        </p>
+        <ul class="auth-side-list">
+          <li>
+            <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+            Pick up where you left off
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+            Access all your saved analyses
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+            New conversations, anytime
+          </li>
+        </ul>
+      </div>
+
+      <p class="auth-side-footnote">
+        International Student Innovation Competition project.
+      </p>
+    </div>
+
+    <!-- RIGHT SIDE: form -->
+    <div class="auth-form-side">
+      <div class="auth-form-wrap">
+
+        <div class="auth-header">
+          <h1 class="auth-title">Log in</h1>
+          <p class="auth-subtitle">
+            New here?
+            <a href="signup.html" class="auth-link">Create an account</a>
+          </p>
+        </div>
+
+        <div class="auth-demo-notice" role="note">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          <span>
+            <strong>Demo notice:</strong> The backend is not connected yet.
+            This form is a preview of the real interface — submitting it
+            will not log you in.
+          </span>
+        </div>
+
+        <form id="loginForm" class="auth-form" novalidate>
+
+          <div class="auth-field">
+            <label for="email" class="auth-label">Email</label>
+            <input
+              type="email"
+              class="form-control auth-input"
+              id="email"
+              name="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              required
+            />
+            <div class="auth-error" id="emailError" role="alert"></div>
+          </div>
+
+          <div class="auth-field">
+            <label for="password" class="auth-label">Password</label>
+            <div class="auth-input-group">
+              <input
+                type="password"
+                class="form-control auth-input"
+                id="password"
+                name="password"
+                placeholder="Your password"
+                autocomplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                class="auth-toggle-pw"
+                data-toggle-for="password"
+                aria-label="Show password"
+              >
+                <i class="bi bi-eye" aria-hidden="true"></i>
+              </button>
             </div>
-        </nav>
-    </header>
-    <!--main content-->
-    <main>
-        <section class="login-section">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-md-6">
-                        <h2 class="text-center mb-4">Log in to Your Account</h2>
-                        <form>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email address</label>
-                                <input type="email" class="form-control" id="email" placeholder="Enter your email">
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" placeholder="Enter your password">
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Log in</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+            <div class="auth-error" id="passwordError" role="alert"></div>
+          </div>
+
+          <div class="auth-row-between">
+            <label class="auth-checkbox">
+              <input type="checkbox" name="rememberMe" />
+              <span>Remember me</span>
+            </label>
+            <a href="#" class="auth-link">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="btn auth-submit" id="loginSubmit">
+            Log in
+          </button>
+
+        </form>
+
+        <p class="auth-footer-text">
+          By logging in, you agree to our
+          <a href="#" class="auth-link">Terms of Service</a>
+          and
+          <a href="#" class="auth-link">Privacy Policy</a>.
+        </p>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/javascript/config.js"></script>
+  <script src="assets/javascript/auth.js"></script>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  ></script>
 </body>
 </html>

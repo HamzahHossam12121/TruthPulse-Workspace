@@ -17,49 +17,282 @@
     <title>TruthPulse</title>
 </head>
 <body>
-    <header class="site-header">
-        <nav class="navbar navbar-expand-lg site-navbar" aria-label="Main navigation">
-            <div class="container">
-                <a class="navbar-brand brand" href="#home" aria-label="TruthPulse home">
-                    <img class="brand-logo" src="assets/imgs/my_logo.png" alt="">
-                    <span>TruthPulse</span>
-                </a>
+  <nav class="navbar navbar-expand-lg site-navbar">
+    <div class="container">
+      <a class="navbar-brand site-brand" href="index.html">
+        <img
+          src="assets/imgs/my_logo.png"
+          alt="AI Verifier logo"
+          class="brand-logo"
+        />
+        <span class="brand-text">TruthPulse</span>
+      </a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#mainNavigation" aria-controls="mainNavigation"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#mainNav"
+        aria-controls="mainNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-                <div class="collapse navbar-collapse" id="mainNavigation">
-                    <ul class="navbar-nav ms-auto align-items-lg-center">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#about">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#contact">Contact</a>
-                        </li>
-                        <li class="nav-item nav-try">
-                            <a class="nav-link" href="#try">Try TruthPulse</a>
-                        </li>
-                        <li class="nav-item nav-actions">
-                            <a class="btn btn-login" href="login.html">Log in</a>
-                        </li>
-                        <li class="nav-item nav-actions">
-                            <a class="btn btn-signup" href="signup.html">Sign up</a>
-                        </li>
-                    </ul>
-                </div>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="chat.html">Try Now</a></li>
+        </ul>
+
+        <div class="d-flex gap-2">
+          <a href="login.html" class="btn btn-sm nav-login-btn">Login</a>
+          <a href="signup.html" class="btn btn-sm nav-signup-btn">Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================================================================
+       HERO
+       - Edit the text inside .hero-title, .hero-lead, and .hero-note.
+       - Preview card is purely illustrative — label it "Sample".
+       ================================================================== -->
+  <section class="hero">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-7">
+          <p class="hero-eyebrow">International Student Innovation Competition</p>
+
+          <h1 class="hero-title">
+            Detect misleading and
+            <span class="hero-highlight">AI-generated</span>
+            information.
+          </h1>
+
+          <p class="hero-lead">
+            AI Verifier helps you check images, videos, and files for
+            signs of manipulation or synthetic origin — and explains
+            what it found in plain language.
+          </p>
+
+          <div class="hero-actions">
+            <a href="chat.html" class="btn btn-lg hero-cta-primary">
+              Try Now
+            </a>
+            <a href="#about" class="btn btn-lg hero-cta-secondary">
+              Learn more
+            </a>
+          </div>
+
+          <!-- Small CSS-only "notice" badge — no emoji -->
+          <p class="hero-note">
+            <span class="notice-badge">!</span>
+            <span>
+              Demo note: the AI model is being built by our team.
+              Until it is connected, the chat page shows clearly-labeled
+              <strong>test data</strong>.
+            </span>
+          </p>
+        </div>
+
+        <div class="col-lg-5">
+          <!-- Illustrative preview only. Edit the text below if you like. -->
+          <div class="hero-preview" aria-hidden="true">
+            <div class="preview-label">SAMPLE PREVIEW</div>
+            <div class="preview-row user">
+              <div class="preview-bubble">Is this image real?</div>
             </div>
-        </nav>
-    </header>
-    <!--main content-->
-    <main>
-        
-    </main>
+            <div class="preview-row ai">
+              <div class="preview-bubble">
+                Analysis: 92% probability of AI generation.
+                Detected inconsistent shadows…
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       ABOUT THE PROJECT — three feature cards
+       - To add/reorder cards: copy a .feature-card column.
+       - Icon slot: replace the <div class="icon-slot"> with your own
+         <img src="assets/your-icon.svg" alt="..." class="feature-icon-img">
+         or an SVG inline. No emojis used.
+       ================================================================== -->
+  <section id="about" class="about-section">
+    <div class="container">
+      <div class="section-heading text-center">
+        <p class="section-eyebrow">About the project</p>
+        <h2 class="section-title">Why we built AI Verifier</h2>
+        <p class="section-lead">
+          Misleading media spreads faster than ever — and AI-generated
+          content is getting harder to spot. Our project gives everyday
+          users a simple, transparent tool to check what they are seeing.
+        </p>
+      </div>
+
+      <div class="row g-4 mt-2">
+
+        <!-- Feature 1 -->
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="icon-slot" aria-hidden="true">
+              <i class="bi bi-search feature-icon-i" aria-hidden="true"></i>
+            </div>
+            <h3>Analyze</h3>
+            <p>
+              Upload an image, video, or file. Our AI reviews it for
+              signs of manipulation or synthetic origin.
+            </p>
+          </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="icon-slot" aria-hidden="true">
+              <i class="bi bi-chat-dots feature-icon-i" aria-hidden="true"></i>
+            </div>
+            <h3>Ask questions</h3>
+            <p>
+              Chat with the AI about the result. Get plain-language
+              explanations instead of cryptic scores.
+            </p>
+          </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="icon-slot" aria-hidden="true">
+            <i class="bi bi-clock-history feature-icon-i" aria-hidden="true"></i>
+            </div>
+            <h3>Keep your history</h3>
+            <p>
+              Every conversation is saved to your account so you can
+              come back and review past analyses.
+            </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       ABOUT THE TEAM / COMPANY
+       - Left column: list items — edit freely.
+       - Right column: quote panel — edit freely.
+       ================================================================== -->
+  <section class="company-section">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <p class="section-eyebrow">About the team</p>
+          <h2 class="section-title">Built by students, for everyone</h2>
+          <p class="section-lead">
+            We are a small international student team competing in this
+            innovation challenge. Our goal is to make media verification
+            understandable and accessible — not to replace professional
+            fact-checkers, but to help regular users make more informed
+            decisions.
+          </p>
+          <ul class="company-list">
+            <li>Frontend: HTML, CSS, JavaScript, Bootstrap 5</li>
+            <li>Backend: Python + a custom AI model</li>
+            <li>Focus: transparency, clarity, and user trust</li>
+          </ul>
+        </div>
+        <div class="col-lg-6">
+          <div class="company-panel">
+            <p class="company-quote">
+              "We want users to understand <em>why</em> something looks
+              suspicious — not just see a red warning label."
+            </p>
+            <p class="company-cite">— The AI Verifier team</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       CALL TO ACTION
+       ================================================================== -->
+  <section class="cta-section">
+    <div class="container text-center">
+      <h2 class="cta-title">Ready to check something?</h2>
+      <p class="cta-lead">
+        Jump straight into the chat — no signup required for the demo.
+      </p>
+      <div class="cta-actions">
+        <a href="chat.html" class="btn btn-lg cta-primary">Try Now</a>
+        <a href="signup.html" class="btn btn-lg cta-secondary">Sign Up</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       CONTACT / FOOTER
+       - Edit the three contact lines in the first .footer-list.
+       ================================================================== -->
+  <footer id="contact" class="site-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-5">
+          <h3 class="footer-brand">
+            <img
+              src="assets/imgs/my_logo.png"
+              alt="TruthPulse logo"
+              class="footer-logo"
+            />
+            <span>TruthPulse</span>
+          </h3>
+          <p class="footer-text">
+            A student-built tool for spotting misleading and
+            AI-generated media. International Student Innovation
+            Competition project.
+          </p>
+        </div>
+
+        <div class="col-md-3">
+          <h4 class="footer-heading">Contact Us</h4>
+          <ul class="footer-list">
+            <li>team@ai-verifier.example</li>
+            <li>github.com/your-team/ai-verifier</li>
+            <li>University of Example</li>
+          </ul>
+          <p class="footer-small">
+            Replace these with your real team contacts before submitting.
+          </p>
+        </div>
+
+        <div class="col-md-4">
+          <h4 class="footer-heading">Quick links</h4>
+          <ul class="footer-list">
+            <li><a href="#about">About the project</a></li>
+            <li><a href="chat.html">Try the demo</a></li>
+            <li><a href="login.html">Login / Sign Up</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <hr class="footer-divider" />
+      <p class="footer-copyright">
+        © 2025 AI Verifier — Student team project. UI is a demo;
+        AI results are not yet live.
+      </p>
+    </div>
+  </footer>
     <!-- main js file-->
     <script src="assets/js/main.js"></script>
-    <!--bootstrap js-->
+    <!--fontawesome js-->
+    <script src="https://kit.fontawesome.com/ba4d5c795d.js" crossorigin="anonymous"></script>    <!--bootstrap js-->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 </body>
