@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
     <!-- description -->
     <meta name="description" content="TruthPulse helps users examine potentially misleading or AI-generated media.">
     <link rel="icon" type="image/png" href="assets/imgs/my_logo.png">
@@ -15,7 +16,7 @@
     <!--fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>TruthPulse</title>
 </head>
 <body>
@@ -156,15 +157,16 @@
 
         <div class="input-hint">
           <small>
-            <strong>Prototype:</strong> You can attach files to preview them.
-            Nothing is uploaded yet — the backend is not connected.
-            Chat replies are still clearly labeled mock data.
+            <strong>Prototype:</strong> Attachments are previewed locally and are not uploaded yet.
+            Replies are test data. Demo conversation text is saved in this browser and is not encrypted;
+            do not enter sensitive personal information.
           </small>
         </div>
       </footer>
     </main>
   </div>
   <script src="assets/javascript/config.js"></script>
+  <script src="assets/javascript/api.js"></script>
   <script src="assets/javascript/utils.js"></script>
   <script src="assets/javascript/mockApi.js"></script>
   <script src="assets/javascript/chat.js"></script>

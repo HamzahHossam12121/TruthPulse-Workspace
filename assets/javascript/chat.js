@@ -34,13 +34,61 @@
     acceptedExtensions: ["png","jpg","jpeg","webp","gif","mp4","webm","mov","pdf"],
   };
 
-  // ---------- 3. State ----------
+  // ---------- 3. Persistent browser history ----------
+  // Prototype only: localStorage is NOT encrypted. Do not enter sensitive data.
+  const STORAGE_KEY = "truthpulse_conversations_v1";
+
+  function loadSavedState() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (!saved || !Array.isArray(saved.conversations)) {
+        return { currentConversationId: null, conversations: [] };
+      }
+      const conversations = saved.conversations
+        .filter((conv) => conv && typeof conv.id === "string" &&
+          typeof conv.title === "string" && Array.isArray(conv.messages))
+        .map((conv) => ({
+          id: conv.id,
+          title: conv.title.slice(0, 60),
+          messages: conv.messages
+            .filter((msg) => msg && ["user", "assistant"].includes(msg.role) &&
+              typeof msg.text === "string")
+            .map((msg) => msg.role === "user"
+              ? { role: "user", text: msg.text, fileNames: Array.isArray(msg.fileNames)
+                  ? msg.fileNames.filter((name) => typeof name === "string").slice(0, 3)
+                  : [] }
+              : { role: "assistant", text: msg.text, isMock: Boolean(msg.isMock) })
+        }));
+      const savedId = saved.currentConversationId;
+      return {
+        currentConversationId: conversations.some((conv) => conv.id === savedId) ? savedId : null,
+        conversations
+      };
+    } catch (error) {
+      console.warn("Could not restore TruthPulse conversation history:", error);
+      return { currentConversationId: null, conversations: [] };
+    }
+  }
+
+  const savedState = loadSavedState();
   const state = {
-    currentConversationId: null,
+    currentConversationId: savedState.currentConversationId,
     isSending: false,
-    mockConversations: [],
-    attachedFiles: [], // { id, file, objectUrl }
+    mockConversations: savedState.conversations,
+    attachedFiles: [], // actual File objects are temporary and never stored
   };
+
+  function saveConversationState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        currentConversationId: state.currentConversationId,
+        conversations: state.mockConversations
+      }));
+    } catch (error) {
+      console.error("Could not save TruthPulse conversation history:", error);
+      appendError("Conversation history could not be saved in this browser. Storage may be full or unavailable.");
+    }
+  }
 
   // ---------- 4. Rendering helpers ----------
   function hideEmptyState() {
@@ -95,7 +143,10 @@
     const conversation = state.mockConversations.find(
       (item) => item.id === state.currentConversationId
     );
-    if (conversation) conversation.messages.push(message);
+    if (conversation) {
+      conversation.messages.push(message);
+      saveConversationState();
+    }
   }
 
   function appendError(message) {
@@ -335,8 +386,8 @@
       } else {
         removeTypingIndicator();
         appendAiMessage(
-          "Real API integration is not wired up yet. " +
-            "Please enable mock mode until js/api.js exists.",
+          "The API client is prepared, but the analysis endpoint and response format " +
+            "must be confirmed with the backend team before live analysis can be enabled.",
           true
         );
       }
@@ -380,6 +431,7 @@
 
     renderConversationList();
     chatTitle.textContent = title;
+    saveConversationState();
 
     const existingEmpty = document.getElementById("emptyState");
     if (existingEmpty) existingEmpty.remove();
@@ -405,12 +457,48 @@
       });
     }
     renderConversationList();
+    saveConversationState();
+    if (sidebar) sidebar.classList.remove("open");
+  }
+
+  function renameConversation(id) {
+    const conversation = state.mockConversations.find((item) => item.id === id);
+    if (!conversation) return;
+
+    const enteredTitle = window.prompt("Rename conversation:", conversation.title);
+    if (enteredTitle === null) return;
+    const title = enteredTitle.trim();
+    if (!title) {
+      window.alert("Please enter a title before saving.");
+      return;
+    }
+
+    conversation.title = title.slice(0, 60);
+    if (state.currentConversationId === id) chatTitle.textContent = conversation.title;
+    saveConversationState();
+    renderConversationList();
+  }
+
+  function deleteConversation(id) {
+    const conversation = state.mockConversations.find((item) => item.id === id);
+    if (!conversation) return;
+    const confirmed = window.confirm(`Delete "${conversation.title}"? This cannot be undone.`);
+    if (!confirmed) return;
+
+    state.mockConversations = state.mockConversations.filter((item) => item.id !== id);
+    if (state.currentConversationId === id) {
+      state.currentConversationId = null;
+      clearAttachments();
+      clearAttachmentError();
+      chatMessages.replaceChildren(buildEmptyState());
+      chatTitle.textContent = "New Conversation";
+    }
+    saveConversationState();
+    renderConversationList();
   }
 
   function renderConversationList() {
-    while (conversationList.firstChild) {
-      conversationList.removeChild(conversationList.firstChild);
-    }
+    conversationList.replaceChildren();
 
     if (state.mockConversations.length === 0) {
       conversationList.appendChild(
@@ -420,20 +508,35 @@
     }
 
     state.mockConversations.forEach((conv) => {
-      const li = createElement("li", "conversation-item", conv.title);
-      if (conv.id === state.currentConversationId) {
-        li.classList.add("active");
-      }
-      li.type = "button";
-      li.tabIndex = 0;
-      li.setAttribute("role", "button");
-      li.addEventListener("click", () => openConversation(conv.id));
-      li.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          openConversation(conv.id);
-        }
-      });
+      const li = createElement("li", "conversation-item");
+      if (conv.id === state.currentConversationId) li.classList.add("active");
+
+      const titleBtn = createElement("button", "conversation-title-btn", conv.title);
+      titleBtn.type = "button";
+      titleBtn.title = "Open conversation";
+      titleBtn.addEventListener("click", () => openConversation(conv.id));
+
+      const renameBtn = createElement("button", "conversation-action-btn");
+      renameBtn.type = "button";
+      renameBtn.title = "Rename conversation";
+      renameBtn.setAttribute("aria-label", `Rename ${conv.title}`);
+      const renameIcon = document.createElement("i");
+      renameIcon.className = "bi bi-pencil";
+      renameIcon.setAttribute("aria-hidden", "true");
+      renameBtn.appendChild(renameIcon);
+      renameBtn.addEventListener("click", () => renameConversation(conv.id));
+
+      const deleteBtn = createElement("button", "conversation-action-btn delete");
+      deleteBtn.type = "button";
+      deleteBtn.title = "Delete conversation";
+      deleteBtn.setAttribute("aria-label", `Delete ${conv.title}`);
+      const deleteIcon = document.createElement("i");
+      deleteIcon.className = "bi bi-trash3";
+      deleteIcon.setAttribute("aria-hidden", "true");
+      deleteBtn.appendChild(deleteIcon);
+      deleteBtn.addEventListener("click", () => deleteConversation(conv.id));
+
+      li.append(titleBtn, renameBtn, deleteBtn);
       conversationList.appendChild(li);
     });
   }
@@ -441,6 +544,7 @@
   // ---------- 8. New chat ----------
   function handleNewChat() {
     state.currentConversationId = null;
+    saveConversationState();
     clearAttachments();
     clearAttachmentError();
 
@@ -466,5 +570,11 @@
     });
   }
 
+  renderConversationList();
+  if (state.currentConversationId) {
+    openConversation(state.currentConversationId);
+  } else {
+    chatTitle.textContent = "New Conversation";
+  }
   messageInput.focus();
 })();

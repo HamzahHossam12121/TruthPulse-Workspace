@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="description" content="TruthPulse helps users examine potentially misleading or AI-generated media.">
   <meta name="theme-color" content="#102a43">
   <link rel="icon" type="image/png" href="assets/imgs/my_logo.png">
@@ -11,7 +12,7 @@
   <link rel="stylesheet" href="assets/css/register.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <title>TruthPulse — Sign Up</title>
 </head>
 <body class="auth-body">
@@ -123,7 +124,7 @@
                 class="form-control auth-input"
                 id="password"
                 name="password"
-                placeholder="At least 8 characters"
+                placeholder="Create a strong password"
                 autocomplete="new-password"
                 required
                 minlength="8"
@@ -137,9 +138,14 @@
                 <i class="bi bi-eye" aria-hidden="true"></i>
               </button>
             </div>
-            <div class="auth-hint">
-              Use at least 8 characters. Mix letters, numbers, and symbols.
-            </div>
+            <div class="auth-hint">Create a password that meets every requirement below.</div>
+            <ul class="password-rules" id="passwordRules" aria-label="Password requirements">
+              <li data-rule="length"><i class="bi bi-circle" aria-hidden="true"></i><span>At least 8 characters</span></li>
+              <li data-rule="lower"><i class="bi bi-circle" aria-hidden="true"></i><span>One lowercase letter (a–z)</span></li>
+              <li data-rule="upper"><i class="bi bi-circle" aria-hidden="true"></i><span>One uppercase letter (A–Z)</span></li>
+              <li data-rule="number"><i class="bi bi-circle" aria-hidden="true"></i><span>One number (0–9)</span></li>
+              <li data-rule="special"><i class="bi bi-circle" aria-hidden="true"></i><span>One special character (e.g. !, @, #)</span></li>
+            </ul>
             <div class="auth-error" id="passwordError" role="alert"></div>
           </div>
 
@@ -188,6 +194,7 @@
 
   <!-- Auth logic -->
   <script src="assets/javascript/config.js"></script>
+  <script src="assets/javascript/api.js"></script>
   <script src="assets/javascript/auth.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -1086,3 +1086,135 @@ a {
         transition-duration: 0.01ms !important;
     }
 }
+
+
+/* ============================================================
+   TruthPulse chat polish — responsive, restrained motion
+   ============================================================ */
+body { font-family: "DM Sans", system-ui, sans-serif; }
+h1, h2, h3, .app-title { font-family: "Space Grotesk", "DM Sans", sans-serif; }
+.app-container { background:
+  radial-gradient(ellipse at 78% 2%, rgba(22,217,210,.055), transparent 30%),
+  var(--page-bg);
+}
+.sidebar { box-shadow: 10px 0 38px rgba(9,20,36,.08); }
+.app-title { letter-spacing: -.045em; }
+.chat-main { min-width: 0; }
+.chat-header {
+  position: relative;
+  z-index: 2;
+  background: rgba(255,255,255,.88);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(226,232,240,.8);
+}
+.chat-title { letter-spacing: -.04em; overflow-wrap: anywhere; }
+.chat-badge { border: 1px solid rgba(183,121,31,.16); }
+.chat-messages {
+  scroll-behavior: smooth;
+  background-image: radial-gradient(rgba(20,45,68,.035) .8px, transparent .8px);
+  background-size: 18px 18px;
+}
+.empty-state { animation: tp-chat-enter .55s cubic-bezier(.2,.7,.2,1) both; }
+.empty-icon-wrap { box-shadow: 0 12px 35px rgba(22,217,210,.13); }
+.message-row { animation: tp-message-enter .28s ease both; }
+.message-bubble { overflow-wrap: anywhere; }
+.message-row.user .message-bubble {
+  box-shadow: 0 7px 20px rgba(11,20,36,.08);
+}
+.message-row.ai .message-bubble {
+  border: 1px solid rgba(226,232,240,.9);
+  box-shadow: 0 5px 18px rgba(11,20,36,.035);
+}
+.chat-input-area {
+  background: rgba(255,255,255,.96);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+.message-form {
+  padding: 6px;
+  border: 1px solid #dfe7ef;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 9px 28px rgba(16,27,45,.055);
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.message-form:focus-within {
+  border-color: rgba(15,196,190,.8);
+  box-shadow: 0 0 0 4px rgba(22,217,210,.1), 0 12px 32px rgba(16,27,45,.07);
+}
+.message-form .message-input { border-color: transparent; box-shadow: none; background: transparent; }
+.message-form .message-input:focus { border-color: transparent; box-shadow: none; }
+.send-btn { transition: transform .2s ease, box-shadow .2s ease; }
+.send-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 7px 18px rgba(15,196,190,.18); }
+.attachment-card { animation: tp-message-enter .22s ease both; }
+.conversation-list li:not(.conversation-empty) { transition: background .2s ease, transform .2s ease; }
+.conversation-list li:not(.conversation-empty):hover { transform: translateX(2px); }
+.conversation-title-btn { overflow-wrap: anywhere; }
+@keyframes tp-chat-enter { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes tp-message-enter { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .empty-state, .message-row, .attachment-card { animation: none !important; }
+  .conversation-list li:not(.conversation-empty), .send-btn { transition: none !important; }
+}
+
+
+/* Sidebar conversation controls: override broad legacy button styles safely */
+.conversation-list li:not(.conversation-empty).conversation-item {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid transparent;
+}
+.conversation-list li:not(.conversation-empty).conversation-item.active {
+  background: rgba(255,255,255,.085);
+  border-color: rgba(255,255,255,.07);
+}
+.conversation-list li:not(.conversation-empty) .conversation-title-btn {
+  display: block;
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  padding: 9px 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #d7e1ec;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+}
+.conversation-list li:not(.conversation-empty) .conversation-title-btn:hover {
+  color: #fff;
+  background: rgba(255,255,255,.045);
+}
+.conversation-list li:not(.conversation-empty) .conversation-action-btn {
+  display: inline-flex;
+  flex: 0 0 28px;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  min-width: 28px;
+  height: 30px;
+  padding: 0;
+  color: #a9b9cb;
+  border: 0;
+  background: transparent;
+  border-radius: 7px;
+  opacity: .78;
+}
+.conversation-list li:not(.conversation-empty) .conversation-action-btn:hover,
+.conversation-list li:not(.conversation-empty) .conversation-action-btn:focus-visible {
+  opacity: 1;
+  color: var(--teal-500);
+  background: rgba(255,255,255,.09);
+}
+.conversation-list li:not(.conversation-empty) .conversation-action-btn.delete:hover {
+  color: #ff9898;
+}
+.conversation-list li:not(.conversation-empty) .conversation-action-btn i { pointer-events: none; }
+@media (max-width: 767.98px) {
+  .conversation-list li:not(.conversation-empty) .conversation-action-btn { flex-basis: 30px; width: 30px; }
+}
