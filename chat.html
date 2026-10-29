@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- description -->
-    <meta name="description" content="TruthPulse is a AI model platform that provides accurate and reliable information on various topics.">
+    <meta name="description" content="TruthPulse helps users examine potentially misleading or AI-generated media.">
     <link rel="icon" type="image/png" href="assets/imgs/my_logo.png">
     <!--bootstrap css-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- main css-->
-    <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="stylesheet" href="assets/css/chat.css">
     <!--fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,13 +19,11 @@
     <title>TruthPulse</title>
 </head>
 <body>
-
   <div class="app-container">
 
-    <!-- ---------- SIDEBAR ---------- -->
+    <!-- ==================== SIDEBAR ==================== -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <!-- Logo image (change src if you use .svg) -->
         <h1 class="app-title">
           <img
             src="assets/imgs/my_logo.png"
@@ -38,7 +38,8 @@
           type="button"
           title="Start a new conversation"
         >
-          + New Chat
+          <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>
+          New Chat
         </button>
       </div>
 
@@ -51,14 +52,18 @@
       </ul>
 
       <div class="sidebar-footer">
-        <a href="index.html" class="sidebar-home-link">← Home</a>
-        <small>Stage 1 — Mock mode</small>
+        <a href="index.html" class="sidebar-home-link">
+          <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>
+          Home
+        </a>
+        <small>Prototype mode — not connected to AI yet</small>
       </div>
     </aside>
 
-    <!-- ---------- MAIN CHAT AREA ---------- -->
+    <!-- ==================== MAIN CHAT ==================== -->
     <main class="chat-main">
 
+      <!-- ---------- Header ---------- -->
       <header class="chat-header">
         <button
           class="btn btn-sm btn-outline-secondary d-md-none"
@@ -68,22 +73,32 @@
         >
           <i class="bi bi-list" aria-hidden="true"></i>
         </button>
-        <div>
-          <h2 class="chat-title" id="chatTitle">New Conversation</h2>
-          <p class="chat-subtitle" id="chatSubtitle">
-            Ask about an image, video, or file to verify its authenticity.
-          </p>
+
+        <div class="chat-header-inner">
+          <div class="chat-header-text">
+            <h2 class="chat-title" id="chatTitle">New Conversation</h2>
+            <p class="chat-subtitle" id="chatSubtitle">
+              Ask about an image, video, or file to verify its authenticity.
+            </p>
+          </div>
+
+          <span class="chat-badge" title="Responses are currently test data">
+            <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+            Demo mode
+          </span>
         </div>
       </header>
 
+      <!-- ---------- Messages ---------- -->
       <section
         class="chat-messages"
         id="chatMessages"
         aria-live="polite"
       >
         <div class="empty-state" id="emptyState">
-          <i class="bi bi-search empty-icon-i" aria-hidden="true"></i>
-          <div class="empty-icon-slot" aria-hidden="true"></div>
+          <div class="empty-icon-wrap">
+            <i class="bi bi-search empty-icon-i" aria-hidden="true"></i>
+          </div>
           <h3>Let's verify something</h3>
           <p>
             Type a message below, or attach an image, video, or file
@@ -92,17 +107,33 @@
         </div>
       </section>
 
+      <!-- ---------- Input area ---------- -->
       <footer class="chat-input-area">
+
+        <!-- Attachment previews (rendered by chat.js) -->
+        <div class="attachment-previews" id="attachmentPreviews" hidden></div>
+
+        <!-- Input form -->
         <form id="messageForm" class="message-form" autocomplete="off">
+
           <button
             type="button"
             class="btn attach-btn"
             id="attachBtn"
-            title="Attach a file (coming in a later stage)"
-            disabled
+            title="Attach a file"
+            aria-label="Attach a file"
           >
             <i class="bi bi-paperclip" aria-hidden="true"></i>
           </button>
+
+          <!-- Hidden file input -->
+          <input
+            type="file"
+            id="fileInput"
+            class="hidden-file-input"
+            multiple
+            accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime,application/pdf"
+          />
 
           <input
             type="text"
@@ -118,22 +149,21 @@
             class="btn btn-primary send-btn"
             id="sendBtn"
           >
+            <i class="bi bi-send-fill me-1" aria-hidden="true"></i>
             Send
           </button>
         </form>
 
         <div class="input-hint">
           <small>
-            <strong>Stage 1:</strong> This is a UI test — responses are
-            mocked and clearly labeled as test data. No real AI is being
-            called yet.
+            <strong>Prototype:</strong> You can attach files to preview them.
+            Nothing is uploaded yet — the backend is not connected.
+            Chat replies are still clearly labeled mock data.
           </small>
         </div>
       </footer>
-
     </main>
   </div>
-
   <script src="assets/javascript/config.js"></script>
   <script src="assets/javascript/utils.js"></script>
   <script src="assets/javascript/mockApi.js"></script>

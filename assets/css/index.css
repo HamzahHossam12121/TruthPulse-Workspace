@@ -1,23 +1,20 @@
 /* ============================================================
    AI VERIFIER — CUSTOM STYLES
-   Palette:
-     --brand-red   : #e9253c
-     --brand-black : #000000
-     --brand-sage  : #ACC5A6
-     --brand-teal  : #359FA0
+   Palette: deep navy, electric blue, and cyan for a trustworthy AI-verification product.
    No emojis are used; icon slots are editable placeholders.
    ============================================================ */
 
 :root {
-  --brand-red:   #e9253c;
-  --brand-black: #000000;
-  --brand-sage:  #ACC5A6;
-  --brand-teal:  #359FA0;
+  --brand-red:   #2563eb; /* primary action blue */
+  --brand-danger: #dc2626; /* errors and validation only */
+  --brand-black: #0b1220; /* deep ink navy */
+  --brand-sage:  #a5f3fc; /* soft cyan highlight */
+  --brand-teal:  #06b6d4; /* cyan accent */
 
-  --bg-page:     #f8f9fa;
+  --bg-page:     #f5f8fc;
   --bg-surface:  #ffffff;
-  --border-soft: #e9ecef;
-  --text-muted:  #6c757d;
+  --border-soft: #e2e8f0;
+  --text-muted:  #64748b;
 
   --sidebar-width: 280px;
   --chat-max-width: 900px;
@@ -122,8 +119,8 @@ body.home-body {
 }
 
 .nav-signup-btn:hover {
-  background-color: #c71f33;
-  border-color: #c71f33;
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
   color: #ffffff;
 }
 
@@ -188,7 +185,7 @@ body.home-body {
 }
 
 .hero-cta-primary:hover {
-  background-color: #c71f33;
+  background-color: #1d4ed8;
   color: #ffffff;
 }
 
@@ -245,7 +242,7 @@ body.home-body {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  box-shadow: 0 10px 40px rgba(233, 37, 60, 0.15);
+  box-shadow: 0 10px 40px rgba(37, 99, 235, 0.16);
 }
 
 .preview-label {
@@ -608,8 +605,8 @@ body.home-body {
 
 .new-chat-btn:hover,
 .new-chat-btn:focus {
-  background-color: #c71f33;
-  border-color: #c71f33;
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
 }
 
 .sidebar-section-label {
@@ -851,7 +848,7 @@ body.home-body {
 
 .message-input:focus {
   border-color: var(--brand-teal);
-  box-shadow: 0 0 0 0.2rem rgba(53, 159, 160, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(6, 182, 212, 0.22);
 }
 
 .send-btn {
@@ -864,8 +861,8 @@ body.home-body {
 
 .send-btn:hover,
 .send-btn:focus {
-  background-color: #c71f33;
-  border-color: #c71f33;
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
 }
 
 .send-btn:disabled {

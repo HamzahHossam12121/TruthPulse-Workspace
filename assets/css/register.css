@@ -14,19 +14,19 @@
    ============================================================ */
 
 /* ------------------------------------------------------------
-   Palette (same values as styles.css — keeping them identical
-   so there is no ambiguity when both files load).
+   Palette: shared deep-navy, blue, and cyan theme.
    ------------------------------------------------------------ */
 :root {
-  --brand-red:   #e9253c;
-  --brand-black: #000000;
-  --brand-sage:  #ACC5A6;
-  --brand-teal:  #359FA0;
+  --brand-red:   #2563eb; /* primary action blue */
+  --brand-danger: #dc2626; /* errors and validation only */
+  --brand-black: #0b1220; /* deep ink navy */
+  --brand-sage:  #a5f3fc; /* soft cyan highlight */
+  --brand-teal:  #06b6d4; /* cyan accent */
 
-  --bg-page:     #f8f9fa;
+  --bg-page:     #f5f8fc;
   --bg-surface:  #ffffff;
-  --border-soft: #e9ecef;
-  --text-muted:  #6c757d;
+  --border-soft: #e2e8f0;
+  --text-muted:  #64748b;
 }
 
 /* ============================================================
@@ -72,7 +72,7 @@ body.auth-body .auth-side::after {
   width: 320px;
   height: 320px;
   border-radius: 50%;
-  background-color: rgba(233, 37, 60, 0.15);
+  background-color: rgba(37, 99, 235, 0.16);
   pointer-events: none;
 }
 
@@ -258,12 +258,12 @@ body.auth-body .auth-input {
 body.auth-body .auth-input:focus {
   border-color: var(--brand-teal);
   outline: none;
-  box-shadow: 0 0 0 0.2rem rgba(53, 159, 160, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(6, 182, 212, 0.22);
 }
 
 body.auth-body .auth-input.is-invalid {
-  border-color: var(--brand-red);
-  box-shadow: 0 0 0 0.2rem rgba(233, 37, 60, 0.15);
+  border-color: var(--brand-danger);
+  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.16);
 }
 
 /* Show/hide password wrapper */
@@ -343,7 +343,7 @@ body.auth-body .auth-submit {
 }
 
 body.auth-body .auth-submit:hover:not(:disabled) {
-  background-color: #c71f33;
+  background-color: #1d4ed8;
 }
 
 body.auth-body .auth-submit:disabled {
