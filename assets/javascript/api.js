@@ -44,6 +44,7 @@
       headers.set("Content-Type", "application/json");
     }
     headers.set("Accept", "application/json");
+    headers.set("ngrok-skip-browser-warning", "true");
 
     try {
       const response = await fetch(base + path, {
