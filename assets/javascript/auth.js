@@ -240,9 +240,11 @@
         window.location.assign("chat.html");
       } catch (error) {
         showNotice(
-          error.status === 401
-            ? "Email or password is incorrect."
-            : error.message || "Could not log in. Please try again.",
+          error.status === 404
+            ? "No account exists for this email. Please sign up first."
+            : error.status === 401
+              ? "Email or password is incorrect."
+              : error.message || "Could not log in. Please try again.",
           "error"
         );
       } finally {
