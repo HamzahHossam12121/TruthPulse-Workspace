@@ -44,7 +44,8 @@
       headers.set("Content-Type", "application/json");
     }
     headers.set("Accept", "application/json");
-    headers.set("ngrok-skip-browser-warning", "true");
+    // Do not add the ngrok-skip-browser-warning header: this is a Render API,
+    // and that non-safelisted header forces a CORS preflight unnecessarily.
 
     try {
       const response = await fetch(base + path, {
