@@ -1,7 +1,6 @@
 /* ============================================================
    CHAT PAGE — account-owned conversations + Google AI backend.
-   Keeps the existing page markup and CSS classes; conversation data is
-   loaded from the authenticated backend rather than browser localStorage.
+   Conversation data is loaded from the authenticated backend.
    ============================================================ */
 (function initLiveChatPage() {
   "use strict";
@@ -179,7 +178,6 @@
       if (fileNames.length) showError("File analysis is not connected yet. Please send a text question.");
       return;
     }
-
     const titleWasNew = !state.currentId;
     clearMessages();
     appendMessage("user", message, fileNames);
@@ -190,9 +188,7 @@
     try {
       const result = await TruthPulseAPI.chat({ message, conversationId: state.currentId });
       document.getElementById("typingRow")?.remove();
-      if (!result || result.success !== true || typeof result.text !== "string") {
-        throw new Error("The backend returned an unexpected AI response.");
-      }
+      if (!result || result.success !== true || typeof result.text !== "string") throw new Error("The backend returned an unexpected AI response.");
       appendMessage("assistant", result.text);
       state.currentId = result.conversationId || state.currentId;
       if (titleWasNew) titleEl.textContent = message.slice(0, 40) + (message.length > 40 ? "…" : "");
@@ -204,17 +200,13 @@
       await refreshConversations();
     } catch (error) {
       document.getElementById("typingRow")?.remove();
-      if (error.status === 401) {
-        requireLogin();
-      } else {
+      if (error.status === 401) requireLogin();
+      else {
         if (error.code === "DAILY_QUESTION_LIMIT") updateUsage(0, error.dailyLimit || state.dailyLimit);
         if (Number.isFinite(error.remaining)) updateUsage(error.remaining, error.dailyLimit || state.dailyLimit);
         showError(error.message || "The AI service could not answer. Please try again.");
       }
-    } finally {
-      setSending(false);
-      input.focus();
-    }
+    } finally { setSending(false); input.focus(); }
   }
   function clearAttachments() {
     state.attachedFiles.forEach((entry) => { if (entry.objectUrl) URL.revokeObjectURL(entry.objectUrl); });
@@ -234,7 +226,6 @@
     }
     fileInput.value = "";
   }
-
   form.addEventListener("submit", handleSend);
   newChatBtn?.addEventListener("click", newConversation);
   attachBtn?.addEventListener("click", () => fileInput?.click());
@@ -244,7 +235,6 @@
     badge.title = "Chat requests use Google AI Studio through the authenticated backend.";
     badge.replaceChildren(el("i", "bi bi-stars me-1"), document.createTextNode("AI connected"));
   }
-
   (async () => {
     try {
       await Promise.all([refreshConversations(), refreshUsage()]);
@@ -252,11 +242,7 @@
       else newConversation();
     } catch (error) {
       if (error.status === 401) requireLogin();
-      else {
-        updateUsage(5, 5);
-        newConversation();
-        showError(error.message || "Could not connect to the backend. Please try again later.");
-      }
+      else { updateUsage(5, 5); newConversation(); showError(error.message || "Could not connect to the backend. Please try again later."); }
     }
   })();
 })();
