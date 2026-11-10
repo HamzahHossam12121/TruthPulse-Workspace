@@ -42,4 +42,42 @@
       });
     });
   }
+    // Authentication state on the homepage
+  const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  const continueBtn = document.getElementById("continueBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  function updateAuthUI(isLoggedIn) {
+    if (loginBtn) loginBtn.classList.toggle("d-none", isLoggedIn);
+    if (signupBtn) signupBtn.classList.toggle("d-none", isLoggedIn);
+    if (continueBtn) continueBtn.classList.toggle("d-none", !isLoggedIn);
+    if (logoutBtn) logoutBtn.classList.toggle("d-none", !isLoggedIn);
+  }
+
+  async function checkAuth() {
+    try {
+      const user = await window.TruthPulseAPI.currentUser();
+      updateAuthUI(!!user);
+    } catch (error) {
+      updateAuthUI(false);
+    }
+  }
+
+  if (loginBtn && signupBtn && continueBtn && logoutBtn) {
+    checkAuth();
+
+    logoutBtn.addEventListener("click", async () => {
+      logoutBtn.disabled = true;
+
+      try {
+        await window.TruthPulseAPI.logout();
+        updateAuthUI(false);
+      } catch (error) {
+        console.error("Logout failed:", error);
+      } finally {
+        logoutBtn.disabled = false;
+      }
+    });
+  }
 })();

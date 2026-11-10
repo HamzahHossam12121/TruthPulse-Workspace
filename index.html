@@ -50,9 +50,22 @@
           <li class="nav-item"><a class="nav-link" href="chat.html">Try Now</a></li>
         </ul>
 
-        <div class="d-flex gap-2">
-          <a href="login.html" class="btn btn-sm nav-login-btn">Login</a>
-          <a href="signup.html" class="btn btn-sm nav-signup-btn">Sign Up</a>
+        <div class="d-flex gap-2" id="authNav">
+          <a href="login.html" class="btn btn-sm nav-login-btn" id="loginBtn">
+            Login
+          </a>
+
+          <a href="signup.html" class="btn btn-sm nav-signup-btn" id="signupBtn">
+            Sign Up
+          </a>
+
+          <a href="chat.html" class="btn btn-sm nav-signup-btn d-none" id="continueBtn">
+            Continue to Chat
+          </a>
+
+          <button type="button" class="btn btn-sm nav-login-btn d-none" id="logoutBtn">
+            Log Out
+          </button>
         </div>
       </div>
     </div>
