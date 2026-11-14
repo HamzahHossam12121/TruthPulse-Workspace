@@ -30,6 +30,8 @@ The browser does **not** securely encrypt account data by itself. Client-side va
 - Never store plaintext passwords. Hash passwords on the server using a modern password-hashing algorithm such as Argon2id (preferred where available) or bcrypt, with library-managed salts and safe parameters.
 - Do not log passwords, authentication headers, session cookies, or sensitive uploaded content.
 - Prefer server-set session cookies with `Secure`, `HttpOnly`, and an appropriate `SameSite` setting. Add CSRF protection if the chosen session architecture requires it.
+- If users should remain signed in after closing and reopening the browser, configure a persistent session cookie with an explicit `Max-Age` or `Expires`, and enforce server-side session expiry/revocation. A session cookie without an expiry normally ends when the browser session ends. Do not implement “remember me” by saving passwords or session tokens in browser storage.
+- The frontend calls `GET /api/auth/me` on page load and sends cookies with `credentials: "include"`. The backend must return the authenticated user only when the cookie maps to a valid session, and `POST /api/auth/logout` must revoke that session and clear the cookie using matching cookie attributes.
 - Never store passwords or session tokens in `localStorage` or `sessionStorage`.
 - Encrypt sensitive data at rest on the server/database where required by the project's data policy; protect backups and encryption keys separately.
 - The demo chat history currently uses browser `localStorage` and is **not encrypted**. Do not enter real sensitive information into the prototype. For real accounts, move history to authenticated backend storage and define retention/deletion rules.

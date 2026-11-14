@@ -318,6 +318,31 @@ a {
     color: var(--teal-500);
 }
 
+.sidebar-signout-btn {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: fit-content;
+    padding: 7px 3px;
+    color: #F2A6A6;
+    background: transparent;
+    border: 0;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color var(--transition);
+}
+
+.sidebar-signout-btn:hover {
+    color: #FF7777;
+}
+
+.sidebar-signout-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
 .sidebar-footer small {
     display: block;
     color: #8798AF;

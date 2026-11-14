@@ -11,6 +11,7 @@
   const titleEl = document.getElementById("chatTitle");
   const subtitleEl = document.getElementById("chatSubtitle");
   const newChatBtn = document.getElementById("newChatBtn");
+  const logoutBtn = document.getElementById("chatLogoutBtn");
   const listEl = document.getElementById("conversationList");
   const sidebar = document.getElementById("sidebar");
   const toggleSidebarBtn = document.getElementById("toggleSidebarBtn");
@@ -184,8 +185,24 @@
     }
   }
   function requireLogin() {
-    showError("Please sign in to use AI chat and access your conversations.");
+    showError("Your sign-in session has expired. Please sign in again.");
     window.setTimeout(() => window.location.assign("login.html"), 1200);
+  }
+  async function handleLogout() {
+    if (logoutBtn) {
+      logoutBtn.disabled = true;
+      logoutBtn.setAttribute("aria-busy", "true");
+    }
+    try {
+      await TruthPulseAPI.logout();
+      window.location.replace("index.html");
+    } catch (error) {
+      showError(error.message || "Sign out failed. Please try again.");
+      if (logoutBtn) {
+        logoutBtn.disabled = false;
+        logoutBtn.removeAttribute("aria-busy");
+      }
+    }
   }
   function showTyping() {
     const row = el("div", "message-row ai");
@@ -264,6 +281,7 @@
   }
   form.addEventListener("submit", handleSend);
   newChatBtn?.addEventListener("click", createConversation);
+  logoutBtn?.addEventListener("click", handleLogout);
   attachBtn?.addEventListener("click", () => fileInput?.click());
   fileInput?.addEventListener("change", handleFiles);
   toggleSidebarBtn?.addEventListener("click", () => sidebar?.classList.toggle("open"));
