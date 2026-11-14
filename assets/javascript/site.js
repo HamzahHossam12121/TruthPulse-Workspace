@@ -1,6 +1,8 @@
-/* TruthPulse motion and navigation — subtle, accessible, no dependencies. */
+/* TruthPulse homepage behavior — navigation, motion, and authentication. */
 (function () {
   "use strict";
+
+  // Navigation scroll effect.
   const nav = document.querySelector(".site-navbar");
   const updateNav = () => {
     if (nav) nav.classList.toggle("is-scrolled", window.scrollY > 24);
@@ -8,6 +10,7 @@
   updateNav();
   window.addEventListener("scroll", updateNav, { passive: true });
 
+  // Accessible reveal animations.
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const revealTargets = document.querySelectorAll(
     ".hero .col-lg-7, .hero .col-lg-5, .section-heading, .feature-card, .company-section .row > div, .cta-section .container, .site-footer .row > div"
@@ -18,6 +21,7 @@
       element.classList.add("motion-reveal");
       element.style.setProperty("--reveal-delay", `${Math.min(index % 3, 2) * 90}ms`);
     });
+
     const observer = new IntersectionObserver((entries, instance) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -26,58 +30,112 @@
         }
       });
     }, { threshold: 0.12, rootMargin: "0px 0px -35px 0px" });
+
     revealTargets.forEach((element) => observer.observe(element));
   } else {
     revealTargets.forEach((element) => element.classList.add("is-visible"));
   }
 
-  // Close the mobile menu after following an in-page or page link.
+  // Close the mobile menu after following a navigation link.
   const navCollapse = document.getElementById("mainNav");
   if (navCollapse) {
     navCollapse.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", () => {
-        if (window.bootstrap && window.bootstrap.Collapse && navCollapse.classList.contains("show")) {
+        if (
+          window.bootstrap &&
+          window.bootstrap.Collapse &&
+          navCollapse.classList.contains("show")
+        ) {
           window.bootstrap.Collapse.getOrCreateInstance(navCollapse).hide();
         }
       });
     });
   }
-    // Authentication state on the homepage
+
+  // Homepage authentication controls.
   const loginBtn = document.getElementById("loginBtn");
   const signupBtn = document.getElementById("signupBtn");
   const continueBtn = document.getElementById("continueBtn");
   const logoutBtn = document.getElementById("logoutBtn");
+  const ctaSignupBtn = document.getElementById("ctaSignupBtn");
+  const footerAuthLink = document.getElementById("footerAuthLink");
 
   function updateAuthUI(isLoggedIn) {
-    if (loginBtn) loginBtn.classList.toggle("d-none", isLoggedIn);
-    if (signupBtn) signupBtn.classList.toggle("d-none", isLoggedIn);
+    // Signed-out controls.
+    [loginBtn, signupBtn, ctaSignupBtn, footerAuthLink].forEach((element) => {
+      if (element) element.classList.toggle("d-none", isLoggedIn);
+    });
+
+    // Signed-in controls.
     if (continueBtn) continueBtn.classList.toggle("d-none", !isLoggedIn);
     if (logoutBtn) logoutBtn.classList.toggle("d-none", !isLoggedIn);
   }
 
+  function responseHasUser(response) {
+    if (!response || typeof response !== "object") return false;
+    if (response.authenticated === true || response.is_authenticated === true) return true;
+
+    const user = response.user;
+    if (user && typeof user === "object") return true;
+    if (response.id || response.email) return true;
+
+    return false;
+  }
+
   async function checkAuth() {
+    // Fail closed: show signed-out controls until the backend confirms a session.
+    updateAuthUI(false);
+
+    if (!window.TruthPulseAPI || typeof window.TruthPulseAPI.currentUser !== "function") {
+      console.error("TruthPulse API client is not loaded. Check config.js and api.js script order.");
+      return false;
+    }
+
     try {
-      const user = await window.TruthPulseAPI.currentUser();
-      updateAuthUI(!!user);
+      const response = await window.TruthPulseAPI.currentUser();
+      const isLoggedIn = responseHasUser(response);
+      updateAuthUI(isLoggedIn);
+      return isLoggedIn;
     } catch (error) {
+      // 401 and network/server errors both fall back to signed-out controls.
       updateAuthUI(false);
+      if (error.status !== 401) {
+        console.error("Could not check the current user session:", error);
+      }
+      return false;
     }
   }
 
-  if (loginBtn && signupBtn && continueBtn && logoutBtn) {
-    checkAuth();
+  async function handleLogout() {
+    if (!window.TruthPulseAPI || typeof window.TruthPulseAPI.logout !== "function") {
+      console.error("TruthPulse logout API is not loaded.");
+      return;
+    }
 
-    logoutBtn.addEventListener("click", async () => {
+    if (logoutBtn) {
       logoutBtn.disabled = true;
+      logoutBtn.setAttribute("aria-busy", "true");
+    }
 
-      try {
-        await window.TruthPulseAPI.logout();
-        updateAuthUI(false);
-      } catch (error) {
-        console.error("Logout failed:", error);
-      } finally {
+    try {
+      // The backend clears the session cookie.
+      await window.TruthPulseAPI.logout();
+      updateAuthUI(false);
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Re-check session state rather than claiming logout succeeded.
+      await checkAuth();
+    } finally {
+      if (logoutBtn) {
         logoutBtn.disabled = false;
+        logoutBtn.removeAttribute("aria-busy");
       }
-    });
+    }
+  }
+
+  const hasAuthControls = loginBtn || signupBtn || continueBtn || logoutBtn;
+  if (hasAuthControls) {
+    checkAuth();
+    if (logoutBtn) logoutBtn.addEventListener("click", handleLogout);
   }
 })();

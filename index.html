@@ -229,7 +229,7 @@
       </p>
       <div class="cta-actions">
         <a href="chat.html" class="btn btn-lg cta-primary">Try Now</a>
-        <a href="signup.html" class="btn btn-lg cta-secondary">Sign Up</a>
+        <a href="signup.html" class="btn btn-lg cta-secondary" id="ctaSignupBtn">Sign Up</a>
       </div>
     </div>
   </section>
@@ -270,7 +270,7 @@
           <ul class="footer-list">
             <li><a href="#about">About the project</a></li>
             <li><a href="chat.html">Try the demo</a></li>
-            <li><a href="login.html">Login / Sign Up</a></li>
+            <li><a href="login.html" id="footerAuthLink">Login / Sign Up</a></li>
           </ul>
         </div>
       </div>
@@ -283,6 +283,9 @@
   </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/ba4d5c795d.js" crossorigin="anonymous"></script>
+    <!-- Load API configuration and client before homepage authentication logic. -->
+    <script src="assets/javascript/config.js"></script>
+    <script src="assets/javascript/api.js"></script>
     <script src="assets/javascript/site.js"></script>
 </body>
 </html>
