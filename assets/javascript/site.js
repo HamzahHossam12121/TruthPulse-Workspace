@@ -43,8 +43,10 @@
   const ctaSignupBtn = document.getElementById("ctaSignupBtn");
   const footerAuthLink = document.getElementById("footerAuthLink");
   const chatLinks = document.querySelectorAll('a[href="chat.html"]');
+  let lastKnownAuthenticated = false;
 
   function updateAuthUI(isLoggedIn) {
+    lastKnownAuthenticated = isLoggedIn;
     [loginBtn, signupBtn, ctaSignupBtn, footerAuthLink].forEach((element) => {
       if (element) element.classList.toggle("d-none", isLoggedIn);
     });
@@ -56,11 +58,9 @@
     chatLinks.forEach((link) => {
       if (link.id !== "continueBtn") link.textContent = isLoggedIn ? "Continue to Chat" : "Try Now";
     });
-    if (footerAuthLink && isLoggedIn) footerAuthLink.textContent = "Continue to Chat";
   }
 
-  async function checkAuth() {
-    updateAuthUI(false);
+  async function checkAuth({ preserveOnNetworkError = false } = {}) {
     if (!window.TruthPulseAPI || typeof window.TruthPulseAPI.currentUser !== "function") {
       console.error("TruthPulse API client is not loaded. Check config.js and api.js script order.");
       return false;
@@ -72,7 +72,9 @@
       updateAuthUI(isLoggedIn);
       return isLoggedIn;
     } catch (error) {
-      updateAuthUI(false);
+      // A 401 means the session is definitely absent/expired. For network or
+      // CORS failures on a BFCache restore, retain the last known UI state.
+      if (error.status === 401 || !preserveOnNetworkError) updateAuthUI(false);
       if (error.status !== 401) console.error("Could not check the current user session:", error);
       return false;
     }
@@ -93,7 +95,14 @@
   }
 
   if (loginBtn || signupBtn || continueBtn || logoutBtn) {
+    // Start from signed-out controls on a fresh page load, then confirm the
+    // backend session. On browser Back/Forward cache restores, revalidate the
+    // cookie instead of leaving the page's stale pre-login UI in place.
+    updateAuthUI(false);
     checkAuth();
+    window.addEventListener("pageshow", (event) => {
+      if (event.persisted) checkAuth({ preserveOnNetworkError: true });
+    });
     logoutBtn?.addEventListener("click", handleLogout);
   }
 })();
