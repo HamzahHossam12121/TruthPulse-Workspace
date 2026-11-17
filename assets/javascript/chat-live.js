@@ -54,12 +54,15 @@
       const fileList = el("div", "message-files");
       fileContext.forEach((f) => {
         const item = el("div", "message-file-item");
+        const header = el("div", "message-file-item-header");
         const icon = el("i", "bi bi-paperclip");
         icon.setAttribute("aria-hidden", "true");
-        const nameStrong = el("strong", "", f.filename || f);
-        item.append(icon, nameStrong);
+        const name = el("span", "", f.filename || f);
+        header.append(icon, name);
+        item.appendChild(header);
         if (f.extracted) {
-          const preview = el("div", "message-file-extracted", f.extracted.slice(0, 120) + (f.extracted.length > 120 ? "…" : ""));
+          const preview = el("div", "message-file-extracted",
+            f.extracted.slice(0, 120) + (f.extracted.length > 120 ? "…" : ""));
           item.appendChild(preview);
         }
         fileList.appendChild(item);
