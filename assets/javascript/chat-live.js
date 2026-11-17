@@ -335,6 +335,9 @@
     setSending(true);
     showTyping();
 
+    const _debugPayload = { message, conversationId: state.currentId, fileContext };
+    console.log("[DEBUG] chat payload →", JSON.parse(JSON.stringify(_debugPayload)));
+
     try {
       const result = await TruthPulseAPI.chat({ message, conversationId: state.currentId, fileContext });
       document.getElementById("typingRow")?.remove();
