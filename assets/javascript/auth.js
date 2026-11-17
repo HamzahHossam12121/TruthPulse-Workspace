@@ -176,11 +176,12 @@
         showNotice(
           result && typeof result.message === "string"
             ? result.message
-            : "Registration request completed. Follow the backend's account verification flow.",
+            : "Account created! Redirecting…",
           "success"
         );
         signupForm.reset();
         updatePasswordChecklist("");
+        window.setTimeout(() => window.location.assign("chat.html"), 800);
       } catch (error) {
         showNotice(
           error.status === 409
