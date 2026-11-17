@@ -17,6 +17,7 @@ const CONFIG = {
     aiUsage: "/api/ai/usage",
     sendMessage: "/api/conversations/{id}/messages",
     uploadFile: "/api/upload",
+    status: "/",
     analyzeContent: "/api/analyze"
   },
   USE_MOCK_API: false,

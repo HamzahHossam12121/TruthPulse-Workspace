@@ -77,6 +77,7 @@
     },
     aiUsage() { return request(endpoints.aiUsage); },
     sendMessage(id, data) { return request(endpoint(endpoints.sendMessage, { id }), { method: "POST", body: JSON.stringify(data) }); },
+    status() { return request(endpoints.status); },
     uploadFile(file) {
       const body = new FormData();
       body.append("files", file);

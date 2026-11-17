@@ -23,7 +23,7 @@
 
   const state = {
     conversations: [], currentId: null, sending: false, creating: false,
-    pendingFiles: [], remaining: 5, dailyLimit: 5
+    pendingFiles: [], remaining: 5, dailyLimit: 5, videoEnabled: true
   };
 
   const el = (tag, className, text) => {
@@ -233,11 +233,22 @@
     scrollBottom();
   }
 
+  function applyVideoButton() {
+    if (!uploadVideoBtn) return;
+    const blocked = !state.videoEnabled;
+    uploadVideoBtn.disabled = state.sending || blocked;
+    uploadVideoBtn.title = blocked
+      ? "Video upload is unavailable."
+      : "Upload a video";
+    if (videoFileInput) videoFileInput.disabled = blocked;
+  }
+
   function setSending(value) {
     state.sending = value;
     sendBtn.disabled = value;
     input.disabled = value;
-    [uploadImageBtn, uploadVideoBtn, uploadDocBtn].forEach((btn) => { if (btn) btn.disabled = value; });
+    [uploadImageBtn, uploadDocBtn].forEach((btn) => { if (btn) btn.disabled = value; });
+    applyVideoButton();
     sendBtn.innerHTML = value
       ? '<i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>Sending…'
       : '<i class="bi bi-send-fill me-1" aria-hidden="true"></i>Send';
@@ -288,10 +299,18 @@
       try {
         const result = await TruthPulseAPI.uploadFile(file);
         const item = Array.isArray(result.results) ? result.results[0] : result;
-        if (!item || !item.success) throw new Error(item?.message || "Upload failed.");
+        if (!item || !item.success) {
+          const error = new Error(item?.message || "Upload failed.");
+          error.code = item?.code;
+          throw error;
+        }
         state.pendingFiles.push({ _id: id, type: item.type, filename: item.filename, extracted: item.extracted });
         updatePendingFileCard(id, "ready ✓");
       } catch (err) {
+        if (err.code === "GROQ_QUOTA_EXCEEDED") {
+          state.videoEnabled = false;
+          applyVideoButton();
+        }
         updatePendingFileCard(id, `failed: ${err.message}`);
       }
     }
@@ -363,6 +382,11 @@
 
   (async () => {
     try {
+      const status = await TruthPulseAPI.status().catch(() => null);
+      if (status && status.videoEnabled === false) {
+        state.videoEnabled = false;
+        applyVideoButton();
+      }
       await Promise.all([refreshConversations(), refreshUsage()]);
       if (state.conversations.length) await openConversation(state.conversations[0].id);
       else showStartPage();

@@ -647,6 +647,13 @@ a {
     box-shadow: var(--shadow-focus);
 }
 
+.attach-btn:disabled {
+    color: #9aa6b2;
+    background: transparent;
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
 
 /* ---------- 15. Text Input ---------- */
 
