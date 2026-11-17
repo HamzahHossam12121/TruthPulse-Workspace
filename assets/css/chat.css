@@ -582,6 +582,10 @@ a {
     display: none !important;
 }
 
+.attachment-previews.visible {
+    display: flex !important;
+}
+
 
 /* ---------- 13. Message Form ---------- */
 
@@ -1151,6 +1155,30 @@ h1, h2, h3, .app-title { font-family: "Space Grotesk", "DM Sans", sans-serif; }
 .empty-icon-wrap { box-shadow: 0 12px 35px rgba(22,217,210,.13); }
 .message-row { animation: tp-message-enter .28s ease both; }
 .message-bubble { overflow-wrap: anywhere; }
+.message-files {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.message-file-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  background: rgba(0,0,0,.04);
+  border-radius: 8px;
+  font-size: 12px;
+}
+.message-row.user .message-file-item { background: rgba(255,255,255,.18); }
+.message-file-item i { margin-right: 5px; opacity: .7; }
+.message-file-extracted {
+  font-size: 11px;
+  opacity: .75;
+  margin-top: 2px;
+  font-style: italic;
+  overflow-wrap: anywhere;
+}
 .message-row.user .message-bubble {
   box-shadow: 0 7px 20px rgba(11,20,36,.08);
 }
@@ -1235,7 +1263,7 @@ h1, h2, h3, .app-title { font-family: "Space Grotesk", "DM Sans", sans-serif; }
 .attachment-card-progress-bar {
     height: 100%;
     border-radius: 4px;
-    background: var(--teal-500);
+    background: #3B82F6;
     width: 0%;
     transition: width .3s ease;
 }
@@ -1243,7 +1271,7 @@ h1, h2, h3, .app-title { font-family: "Space Grotesk", "DM Sans", sans-serif; }
     width: 40%;
     animation: tp-progress-slide 1.1s ease-in-out infinite;
 }
-.attachment-card-progress-bar.done { width: 100%; background: var(--success); }
+.attachment-card-progress-bar.done { width: 100%; background: #16845B; }
 .attachment-card-progress-bar.failed { width: 100%; background: var(--danger); }
 .attachment-card-remove {
     flex-shrink: 0;

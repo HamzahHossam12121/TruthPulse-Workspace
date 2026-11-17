@@ -47,21 +47,26 @@
     messagesEl.appendChild(wrap);
   }
 
-  function appendMessage(role, text, fileNames = []) {
+  function appendMessage(role, text, fileContext = []) {
     const row = el("div", `message-row ${role === "user" ? "user" : "ai"}`);
     const bubble = el("div", "message-bubble");
-    if (text) bubble.appendChild(document.createTextNode(text));
-    if (fileNames.length) {
+    if (fileContext.length) {
       const fileList = el("div", "message-files");
-      fileNames.forEach((name) => {
+      fileContext.forEach((f) => {
         const item = el("div", "message-file-item");
         const icon = el("i", "bi bi-paperclip");
         icon.setAttribute("aria-hidden", "true");
-        item.append(icon, document.createTextNode(name));
+        const nameStrong = el("strong", "", f.filename || f);
+        item.append(icon, nameStrong);
+        if (f.extracted) {
+          const preview = el("div", "message-file-extracted", f.extracted.slice(0, 120) + (f.extracted.length > 120 ? "…" : ""));
+          item.appendChild(preview);
+        }
         fileList.appendChild(item);
       });
       bubble.appendChild(fileList);
     }
+    if (text) bubble.appendChild(document.createTextNode(text));
     row.appendChild(bubble);
     messagesEl.appendChild(row);
     scrollBottom();
@@ -258,7 +263,7 @@
     state.pendingFiles = [];
     if (attachmentPreviews) {
       attachmentPreviews.replaceChildren();
-      attachmentPreviews.hidden = true;
+      attachmentPreviews.classList.remove("visible");
     }
     if (imageFileInput) imageFileInput.value = "";
     if (videoFileInput) videoFileInput.value = "";
@@ -301,12 +306,12 @@
     removeBtn.addEventListener("click", () => {
       state.pendingFiles = state.pendingFiles.filter((f) => f._id !== id);
       card.remove();
-      if (!attachmentPreviews.children.length) attachmentPreviews.hidden = true;
+      if (!attachmentPreviews.children.length) attachmentPreviews.classList.remove("visible");
     });
 
     card.append(iconWrap, body, removeBtn);
     attachmentPreviews.appendChild(card);
-    attachmentPreviews.hidden = false;
+    attachmentPreviews.classList.add("visible");
   }
 
   function updatePendingFileCard(id, status, done) {
@@ -360,10 +365,9 @@
     const message = input.value.trim();
     if (!message) return;
 
-    const fileNames = state.pendingFiles.map((f) => f.filename);
     const fileContext = state.pendingFiles.map(({ type, filename, extracted }) => ({ type, filename, extracted }));
 
-    appendMessage("user", message, fileNames);
+    appendMessage("user", message, fileContext);
     input.value = "";
     clearPendingFiles();
     setSending(true);
