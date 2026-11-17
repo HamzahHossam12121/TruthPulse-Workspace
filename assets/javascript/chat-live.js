@@ -47,6 +47,17 @@
     messagesEl.appendChild(wrap);
   }
 
+  function parseMessageContent(content) {
+    const tag = content.match(/\n\[files:(\[.*\])\]$/s);
+    if (!tag) return { text: content, fileContext: [] };
+    try {
+      const files = JSON.parse(tag[1]).map((f) => ({ type: f.t, filename: f.n, extracted: f.x }));
+      return { text: content.slice(0, tag.index), fileContext: files };
+    } catch {
+      return { text: content, fileContext: [] };
+    }
+  }
+
   function appendMessage(role, text, fileContext = []) {
     const row = el("div", `message-row ${role === "user" ? "user" : "ai"}`);
     const bubble = el("div", "message-bubble");
@@ -140,7 +151,10 @@
       clearMessages();
       const history = Array.isArray(conversation.messages) ? conversation.messages : [];
       if (!history.length) showEmpty();
-      history.forEach((message) => appendMessage(message.role, message.content || ""));
+      history.forEach((message) => {
+        const { text, fileContext } = parseMessageContent(message.content || "");
+        appendMessage(message.role, text, fileContext);
+      });
       renderConversationList();
       if (sidebar) sidebar.classList.remove("open");
     } catch (error) {
