@@ -265,11 +265,36 @@
     if (docFileInput) docFileInput.value = "";
   }
 
-  function addPendingFileCard(filename, status, id) {
+  function fileIcon(file) {
+    if (!file) return "bi-paperclip";
+    const type = file.type || "";
+    if (type.startsWith("image/")) return "bi-file-image";
+    if (type.startsWith("video/")) return "bi-camera-video";
+    if (type === "application/pdf") return "bi-file-earmark-pdf";
+    if (type.includes("word")) return "bi-file-earmark-word";
+    if (type.includes("sheet") || type.includes("excel")) return "bi-file-earmark-spreadsheet";
+    if (type.includes("presentation") || type.includes("powerpoint")) return "bi-file-earmark-slides";
+    return "bi-file-earmark-text";
+  }
+
+  function addPendingFileCard(filename, status, id, iconClass) {
     if (!attachmentPreviews) return;
     const card = el("div", "attachment-card");
     card.id = `attach-${id}`;
-    const nameSpan = el("span", "attachment-card-name", `${filename} — ${status}`);
+
+    const iconWrap = el("div", "attachment-card-icon");
+    const icon = el("i", iconClass || "bi bi-paperclip");
+    icon.setAttribute("aria-hidden", "true");
+    iconWrap.appendChild(icon);
+
+    const body = el("div", "attachment-card-body");
+    const nameSpan = el("span", "attachment-card-name", filename);
+    const statusSpan = el("span", "attachment-card-status", status);
+    const progressWrap = el("div", "attachment-card-progress");
+    const progressBar = el("div", "attachment-card-progress-bar indeterminate");
+    progressWrap.appendChild(progressBar);
+    body.append(nameSpan, statusSpan, progressWrap);
+
     const removeBtn = el("button", "attachment-card-remove", "×");
     removeBtn.type = "button";
     removeBtn.setAttribute("aria-label", `Remove ${filename}`);
@@ -278,24 +303,33 @@
       card.remove();
       if (!attachmentPreviews.children.length) attachmentPreviews.hidden = true;
     });
-    card.append(nameSpan, removeBtn);
+
+    card.append(iconWrap, body, removeBtn);
     attachmentPreviews.appendChild(card);
     attachmentPreviews.hidden = false;
   }
 
-  function updatePendingFileCard(id, status) {
+  function updatePendingFileCard(id, status, done) {
     const card = document.getElementById(`attach-${id}`);
     if (!card) return;
-    const nameSpan = card.querySelector(".attachment-card-name");
-    if (!nameSpan) return;
-    const filename = nameSpan.textContent.split(" — ")[0];
-    nameSpan.textContent = `${filename} — ${status}`;
+    const statusSpan = card.querySelector(".attachment-card-status");
+    const progressBar = card.querySelector(".attachment-card-progress-bar");
+    if (statusSpan) {
+      statusSpan.textContent = status;
+      statusSpan.className = "attachment-card-status" + (done === true ? " success" : done === false ? " error" : "");
+    }
+    if (progressBar) {
+      progressBar.classList.remove("indeterminate");
+      if (done === true) progressBar.classList.add("done");
+      else if (done === false) progressBar.classList.add("failed");
+    }
   }
 
   async function handleFilesChosen(files) {
     for (const file of files) {
       const id = Date.now() + Math.random().toString(36).slice(2);
-      addPendingFileCard(file.name, "uploading…", id);
+      const icon = "bi " + fileIcon(file);
+      addPendingFileCard(file.name, "Processing…", id, icon);
       try {
         const result = await TruthPulseAPI.uploadFile(file);
         const item = Array.isArray(result.results) ? result.results[0] : result;
@@ -305,13 +339,13 @@
           throw error;
         }
         state.pendingFiles.push({ _id: id, type: item.type, filename: item.filename, extracted: item.extracted });
-        updatePendingFileCard(id, "ready ✓");
+        updatePendingFileCard(id, "Ready ✓", true);
       } catch (err) {
         if (err.code === "GROQ_QUOTA_EXCEEDED") {
           state.videoEnabled = false;
           applyVideoButton();
         }
-        updatePendingFileCard(id, `failed: ${err.message}`);
+        updatePendingFileCard(id, err.message || "Failed", false);
       }
     }
   }

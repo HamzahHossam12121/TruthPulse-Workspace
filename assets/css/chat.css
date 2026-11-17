@@ -1179,7 +1179,95 @@ h1, h2, h3, .app-title { font-family: "Space Grotesk", "DM Sans", sans-serif; }
 .message-form .message-input:focus { border-color: transparent; box-shadow: none; }
 .send-btn { transition: transform .2s ease, box-shadow .2s ease; }
 .send-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 7px 18px rgba(15,196,190,.18); }
-.attachment-card { animation: tp-message-enter .22s ease both; }
+.attachment-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 180px;
+    max-width: 260px;
+    padding: 9px 11px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    animation: tp-message-enter .22s ease both;
+    overflow: hidden;
+}
+.attachment-card-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: var(--teal-soft);
+    color: var(--teal-600);
+    font-size: 17px;
+}
+.attachment-card-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.attachment-card-name {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.attachment-card-status {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+.attachment-card-status.success { color: var(--success); }
+.attachment-card-status.error   { color: var(--danger); }
+.attachment-card-progress {
+    height: 4px;
+    border-radius: 4px;
+    background: var(--border);
+    overflow: hidden;
+}
+.attachment-card-progress-bar {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--teal-500);
+    width: 0%;
+    transition: width .3s ease;
+}
+.attachment-card-progress-bar.indeterminate {
+    width: 40%;
+    animation: tp-progress-slide 1.1s ease-in-out infinite;
+}
+.attachment-card-progress-bar.done { width: 100%; background: var(--success); }
+.attachment-card-progress-bar.failed { width: 100%; background: var(--danger); }
+.attachment-card-remove {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+}
+.attachment-card-remove:hover { background: var(--danger-bg); color: var(--danger); }
+@keyframes tp-progress-slide {
+    0%   { margin-left: 0%;   }
+    50%  { margin-left: 55%;  }
+    100% { margin-left: 0%;   }
+}
 .conversation-list li:not(.conversation-empty) { transition: background .2s ease, transform .2s ease; }
 .conversation-list li:not(.conversation-empty):hover { transform: translateX(2px); }
 .conversation-title-btn { overflow-wrap: anywhere; }
