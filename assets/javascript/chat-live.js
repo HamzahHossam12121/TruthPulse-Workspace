@@ -1,7 +1,3 @@
-/* ============================================================
-   CHAT PAGE — account-owned conversations + Google AI backend.
-   Conversation data is loaded from the authenticated backend.
-   ============================================================ */
 (function initLiveChatPage() {
   "use strict";
   const form = document.getElementById("messageForm");
@@ -15,13 +11,21 @@
   const listEl = document.getElementById("conversationList");
   const sidebar = document.getElementById("sidebar");
   const toggleSidebarBtn = document.getElementById("toggleSidebarBtn");
-  const attachBtn = document.getElementById("attachBtn");
-  const fileInput = document.getElementById("fileInput");
+  const uploadImageBtn = document.getElementById("uploadImageBtn");
+  const uploadVideoBtn = document.getElementById("uploadVideoBtn");
+  const uploadDocBtn = document.getElementById("uploadDocBtn");
+  const imageFileInput = document.getElementById("imageFileInput");
+  const videoFileInput = document.getElementById("videoFileInput");
+  const docFileInput = document.getElementById("docFileInput");
   const attachmentPreviews = document.getElementById("attachmentPreviews");
   const badge = document.querySelector(".chat-badge");
   if (!form || !window.TruthPulseAPI) return;
 
-  const state = { conversations: [], currentId: null, sending: false, creating: false, attachedFiles: [], remaining: 5, dailyLimit: 5 };
+  const state = {
+    conversations: [], currentId: null, sending: false, creating: false,
+    pendingFiles: [], remaining: 5, dailyLimit: 5
+  };
+
   const el = (tag, className, text) => {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -30,6 +34,7 @@
   };
   const scrollBottom = () => { messagesEl.scrollTop = messagesEl.scrollHeight; };
   function clearMessages() { messagesEl.replaceChildren(); }
+
   function showEmpty() {
     const wrap = el("div", "empty-state");
     wrap.id = "emptyState";
@@ -41,13 +46,14 @@
       el("p", "", "Choose New Chat to create and name a conversation. Your messages will be saved to your account."));
     messagesEl.appendChild(wrap);
   }
-  function appendMessage(role, text, files = []) {
+
+  function appendMessage(role, text, fileNames = []) {
     const row = el("div", `message-row ${role === "user" ? "user" : "ai"}`);
     const bubble = el("div", "message-bubble");
     if (text) bubble.appendChild(document.createTextNode(text));
-    if (files.length) {
+    if (fileNames.length) {
       const fileList = el("div", "message-files");
-      files.forEach((name) => {
+      fileNames.forEach((name) => {
         const item = el("div", "message-file-item");
         const icon = el("i", "bi bi-paperclip");
         icon.setAttribute("aria-hidden", "true");
@@ -60,17 +66,20 @@
     messagesEl.appendChild(row);
     scrollBottom();
   }
+
   function showError(text) {
     const row = el("div", "message-row ai");
     row.appendChild(el("div", "message-error", text));
     messagesEl.appendChild(row);
     scrollBottom();
   }
+
   function updateUsage(remaining, limit) {
     if (Number.isFinite(remaining)) state.remaining = remaining;
     if (Number.isFinite(limit)) state.dailyLimit = limit;
     if (subtitleEl) subtitleEl.textContent = `${state.remaining} of ${state.dailyLimit} AI questions remaining today.`;
   }
+
   function renderConversationList() {
     listEl.replaceChildren();
     if (!state.conversations.length) {
@@ -96,11 +105,13 @@
       listEl.appendChild(li);
     });
   }
+
   async function refreshConversations() {
     const result = await TruthPulseAPI.listConversations();
     state.conversations = Array.isArray(result.conversations) ? result.conversations : [];
     renderConversationList();
   }
+
   async function refreshUsage() {
     try {
       const usage = await TruthPulseAPI.aiUsage();
@@ -110,6 +121,7 @@
       console.warn("Could not load daily AI usage.", error);
     }
   }
+
   async function openConversation(id) {
     try {
       const result = await TruthPulseAPI.getConversation(id);
@@ -128,6 +140,7 @@
       showError(error.message || "Could not load this conversation.");
     }
   }
+
   async function deleteConversation(id) {
     if (!window.confirm("Delete this conversation? This cannot be undone.")) return;
     try {
@@ -140,14 +153,16 @@
       showError(error.message || "Could not delete the conversation.");
     }
   }
+
   function showStartPage() {
     state.currentId = null;
     titleEl.textContent = "Get started";
     clearMessages();
-    clearAttachments();
+    clearPendingFiles();
     showEmpty();
     renderConversationList();
   }
+
   function nextDefaultTitle() {
     let maxNumber = 0;
     state.conversations.forEach((conversation) => {
@@ -156,6 +171,7 @@
     });
     return `chat${maxNumber + 1}`;
   }
+
   async function createConversation() {
     if (state.creating) return;
     const fallbackTitle = nextDefaultTitle();
@@ -184,10 +200,12 @@
       if (newChatBtn) newChatBtn.disabled = false;
     }
   }
+
   function requireLogin() {
     showError("Your sign-in session has expired. Please sign in again.");
     window.setTimeout(() => window.location.assign("login.html"), 1200);
   }
+
   async function handleLogout() {
     if (logoutBtn) {
       logoutBtn.disabled = true;
@@ -204,6 +222,7 @@
       }
     }
   }
+
   function showTyping() {
     const row = el("div", "message-row ai");
     row.id = "typingRow";
@@ -213,15 +232,57 @@
     messagesEl.appendChild(row);
     scrollBottom();
   }
+
   function setSending(value) {
     state.sending = value;
     sendBtn.disabled = value;
     input.disabled = value;
-    if (attachBtn) attachBtn.disabled = value;
+    [uploadImageBtn, uploadVideoBtn, uploadDocBtn].forEach((btn) => { if (btn) btn.disabled = value; });
     sendBtn.innerHTML = value
       ? '<i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>Sending…'
       : '<i class="bi bi-send-fill me-1" aria-hidden="true"></i>Send';
   }
+
+  function clearPendingFiles() {
+    state.pendingFiles = [];
+    if (attachmentPreviews) {
+      attachmentPreviews.replaceChildren();
+      attachmentPreviews.hidden = true;
+    }
+    if (imageFileInput) imageFileInput.value = "";
+    if (videoFileInput) videoFileInput.value = "";
+    if (docFileInput) docFileInput.value = "";
+  }
+
+  function addPendingFileCard(filename, status, id) {
+    if (!attachmentPreviews) return;
+    const card = el("div", "attachment-card");
+    card.id = `attach-${id}`;
+    card.textContent = `${filename} — ${status}`;
+    attachmentPreviews.appendChild(card);
+    attachmentPreviews.hidden = false;
+  }
+
+  function updatePendingFileCard(id, status) {
+    const card = document.getElementById(`attach-${id}`);
+    if (!card) return;
+    const filename = card.textContent.split(" — ")[0];
+    card.textContent = `${filename} — ${status}`;
+  }
+
+  async function handleFileChosen(file) {
+    const id = Date.now() + Math.random().toString(36).slice(2);
+    addPendingFileCard(file.name, "uploading…", id);
+    try {
+      const result = await TruthPulseAPI.uploadFile(file);
+      if (!result.success) throw new Error(result.message || "Upload failed.");
+      state.pendingFiles.push({ type: result.type, filename: result.filename, extracted: result.extracted });
+      updatePendingFileCard(id, "ready ✓");
+    } catch (err) {
+      updatePendingFileCard(id, `failed: ${err.message}`);
+    }
+  }
+
   async function handleSend(event) {
     event.preventDefault();
     if (state.sending) return;
@@ -230,20 +291,23 @@
       return;
     }
     const message = input.value.trim();
-    const fileNames = state.attachedFiles.map((entry) => entry.file.name);
-    if (!message) {
-      if (fileNames.length) showError("File analysis is not connected yet. Please send a text question.");
-      return;
-    }
+    if (!message) return;
+
+    const fileNames = state.pendingFiles.map((f) => f.filename);
+    const fileContext = [...state.pendingFiles];
+
     appendMessage("user", message, fileNames);
     input.value = "";
-    clearAttachments();
+    clearPendingFiles();
     setSending(true);
     showTyping();
+
     try {
-      const result = await TruthPulseAPI.chat({ message, conversationId: state.currentId });
+      const result = await TruthPulseAPI.chat({ message, conversationId: state.currentId, fileContext });
       document.getElementById("typingRow")?.remove();
-      if (!result || result.success !== true || typeof result.text !== "string") throw new Error("The backend returned an unexpected AI response.");
+      if (!result || result.success !== true || typeof result.text !== "string") {
+        throw new Error("The backend returned an unexpected AI response.");
+      }
       appendMessage("assistant", result.text);
       updateUsage(result.remaining, result.dailyLimit);
       if (badge) {
@@ -259,36 +323,30 @@
         if (Number.isFinite(error.remaining)) updateUsage(error.remaining, error.dailyLimit || state.dailyLimit);
         showError(error.message || "The AI service could not answer. Please try again.");
       }
-    } finally { setSending(false); input.focus(); }
-  }
-  function clearAttachments() {
-    state.attachedFiles.forEach((entry) => { if (entry.objectUrl) URL.revokeObjectURL(entry.objectUrl); });
-    state.attachedFiles = [];
-    if (attachmentPreviews) { attachmentPreviews.replaceChildren(); attachmentPreviews.hidden = true; }
-    if (fileInput) fileInput.value = "";
-  }
-  function handleFiles(event) {
-    const chosen = Array.from(event.target.files || []);
-    const accepted = chosen.filter((file) => file.size <= 25 * 1024 * 1024 &&
-      /^(image\/(png|jpeg|webp|gif)|video\/(mp4|webm|quicktime)|application\/pdf)$/.test(file.type));
-    state.attachedFiles = accepted.slice(0, 3).map((file) => ({ file, objectUrl: URL.createObjectURL(file) }));
-    if (attachmentPreviews) {
-      attachmentPreviews.replaceChildren();
-      state.attachedFiles.forEach(({ file }) => attachmentPreviews.appendChild(el("div", "attachment-card", `${file.name} · preview only (not sent)`)));
-      attachmentPreviews.hidden = !state.attachedFiles.length;
+    } finally {
+      setSending(false);
+      input.focus();
     }
-    fileInput.value = "";
   }
+
   form.addEventListener("submit", handleSend);
   newChatBtn?.addEventListener("click", createConversation);
   logoutBtn?.addEventListener("click", handleLogout);
-  attachBtn?.addEventListener("click", () => fileInput?.click());
-  fileInput?.addEventListener("change", handleFiles);
   toggleSidebarBtn?.addEventListener("click", () => sidebar?.classList.toggle("open"));
+
+  uploadImageBtn?.addEventListener("click", () => imageFileInput?.click());
+  uploadVideoBtn?.addEventListener("click", () => videoFileInput?.click());
+  uploadDocBtn?.addEventListener("click", () => docFileInput?.click());
+
+  imageFileInput?.addEventListener("change", () => { if (imageFileInput.files[0]) handleFileChosen(imageFileInput.files[0]); imageFileInput.value = ""; });
+  videoFileInput?.addEventListener("change", () => { if (videoFileInput.files[0]) handleFileChosen(videoFileInput.files[0]); videoFileInput.value = ""; });
+  docFileInput?.addEventListener("change", () => { if (docFileInput.files[0]) handleFileChosen(docFileInput.files[0]); docFileInput.value = ""; });
+
   if (badge) {
     badge.title = "Chat requests use Ollama through the authenticated backend.";
     badge.replaceChildren(el("i", "bi bi-stars me-1"), document.createTextNode("AI connected"));
   }
+
   (async () => {
     try {
       await Promise.all([refreshConversations(), refreshUsage()]);

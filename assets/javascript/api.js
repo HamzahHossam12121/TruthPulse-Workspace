@@ -77,10 +77,10 @@
     },
     aiUsage() { return request(endpoints.aiUsage); },
     sendMessage(id, data) { return request(endpoint(endpoints.sendMessage, { id }), { method: "POST", body: JSON.stringify(data) }); },
-    uploadFile(id, file) {
+    uploadFile(file) {
       const body = new FormData();
       body.append("file", file);
-      return request(endpoint(endpoints.uploadFile, { id }), { method: "POST", body });
+      return request(endpoints.uploadFile, { method: "POST", body, timeoutMs: 120000 });
     },
     analyzeContent(data) { return request(endpoints.analyzeContent, { method: "POST", body: JSON.stringify(data) }); }
   });

@@ -16,7 +16,7 @@ const CONFIG = {
     chat: "/api/chat",
     aiUsage: "/api/ai/usage",
     sendMessage: "/api/conversations/{id}/messages",
-    uploadFile: "/api/conversations/{id}/upload",
+    uploadFile: "/api/upload",
     analyzeContent: "/api/analyze"
   },
   USE_MOCK_API: false,

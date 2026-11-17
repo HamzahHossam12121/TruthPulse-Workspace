@@ -62,23 +62,31 @@
         <div class="empty-state" id="emptyState">
           <div class="empty-icon-wrap"><i class="bi bi-search empty-icon-i" aria-hidden="true"></i></div>
           <h3>Let's verify something</h3>
-          <p>Type a message below to get started. File uploads are not connected yet.</p>
+          <p>Type a message below to get started. You can also attach images, videos, or documents.</p>
         </div>
       </section>
       <footer class="chat-input-area">
         <div class="attachment-previews" id="attachmentPreviews" hidden></div>
         <form id="messageForm" class="message-form" autocomplete="off">
-          <button type="button" class="btn attach-btn d-none" id="attachBtn" title="Attach a file" aria-label="Attach a file">
-            <i class="bi bi-paperclip" aria-hidden="true"></i>
+          <button type="button" class="btn attach-btn" id="uploadImageBtn" title="Upload an image" aria-label="Upload an image">
+            <i class="bi bi-image" aria-hidden="true"></i>
           </button>
-          <input type="file" id="fileInput" class="hidden-file-input" multiple accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime,application/pdf" />
+          <button type="button" class="btn attach-btn" id="uploadVideoBtn" title="Upload a video" aria-label="Upload a video">
+            <i class="bi bi-camera-video" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn attach-btn" id="uploadDocBtn" title="Upload a document" aria-label="Upload a document">
+            <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+          </button>
+          <input type="file" id="imageFileInput" class="hidden-file-input" accept="image/png,image/jpeg,image/webp,image/gif" />
+          <input type="file" id="videoFileInput" class="hidden-file-input" accept="video/mp4,video/webm,video/quicktime" />
+          <input type="file" id="docFileInput" class="hidden-file-input" accept=".pdf,.docx,.xlsx,.pptx,.doc,.xls,.ppt" />
           <input type="text" class="form-control message-input" id="messageInput" placeholder="Type your message…" aria-label="Message input" maxlength="4000" />
           <button type="submit" class="btn btn-primary send-btn" id="sendBtn">
             <i class="bi bi-send-fill me-1" aria-hidden="true"></i>Send
           </button>
         </form>
         <div class="input-hint">
-          <small><strong>AI chat:</strong> Up to 5 questions per account each day. Attachments are preview-only and are not sent for analysis. Conversation text is stored in your account.</small>
+          <small><strong>AI chat:</strong> Up to 5 questions per account each day. Attach images, videos, or documents — files are analyzed before sending. Conversation text is stored in your account.</small>
         </div>
       </footer>
     </main>
