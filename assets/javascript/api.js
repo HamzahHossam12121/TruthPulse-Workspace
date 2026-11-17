@@ -71,6 +71,7 @@
     createConversation(data) { return request(endpoints.createConversation, { method: "POST", body: JSON.stringify(data) }); },
     deleteConversation(id) { return request(endpoint(endpoints.deleteConversation, { id }), { method: "DELETE" }); },
     chat(data) {
+      console.log("[DEBUG] chat payload sent to backend:", JSON.stringify(data, null, 2));
       return request(endpoints.chat, {
         method: "POST", body: JSON.stringify(data), timeoutMs: 70000
       });
