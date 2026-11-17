@@ -79,7 +79,7 @@
     sendMessage(id, data) { return request(endpoint(endpoints.sendMessage, { id }), { method: "POST", body: JSON.stringify(data) }); },
     uploadFile(file) {
       const body = new FormData();
-      body.append("file", file);
+      body.append("files", file);
       return request(endpoints.uploadFile, { method: "POST", body, timeoutMs: 120000 });
     },
     analyzeContent(data) { return request(endpoints.analyzeContent, { method: "POST", body: JSON.stringify(data) }); }

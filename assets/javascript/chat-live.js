@@ -258,7 +258,16 @@
     if (!attachmentPreviews) return;
     const card = el("div", "attachment-card");
     card.id = `attach-${id}`;
-    card.textContent = `${filename} — ${status}`;
+    const nameSpan = el("span", "attachment-card-name", `${filename} — ${status}`);
+    const removeBtn = el("button", "attachment-card-remove", "×");
+    removeBtn.type = "button";
+    removeBtn.setAttribute("aria-label", `Remove ${filename}`);
+    removeBtn.addEventListener("click", () => {
+      state.pendingFiles = state.pendingFiles.filter((f) => f._id !== id);
+      card.remove();
+      if (!attachmentPreviews.children.length) attachmentPreviews.hidden = true;
+    });
+    card.append(nameSpan, removeBtn);
     attachmentPreviews.appendChild(card);
     attachmentPreviews.hidden = false;
   }
@@ -266,20 +275,25 @@
   function updatePendingFileCard(id, status) {
     const card = document.getElementById(`attach-${id}`);
     if (!card) return;
-    const filename = card.textContent.split(" — ")[0];
-    card.textContent = `${filename} — ${status}`;
+    const nameSpan = card.querySelector(".attachment-card-name");
+    if (!nameSpan) return;
+    const filename = nameSpan.textContent.split(" — ")[0];
+    nameSpan.textContent = `${filename} — ${status}`;
   }
 
-  async function handleFileChosen(file) {
-    const id = Date.now() + Math.random().toString(36).slice(2);
-    addPendingFileCard(file.name, "uploading…", id);
-    try {
-      const result = await TruthPulseAPI.uploadFile(file);
-      if (!result.success) throw new Error(result.message || "Upload failed.");
-      state.pendingFiles.push({ type: result.type, filename: result.filename, extracted: result.extracted });
-      updatePendingFileCard(id, "ready ✓");
-    } catch (err) {
-      updatePendingFileCard(id, `failed: ${err.message}`);
+  async function handleFilesChosen(files) {
+    for (const file of files) {
+      const id = Date.now() + Math.random().toString(36).slice(2);
+      addPendingFileCard(file.name, "uploading…", id);
+      try {
+        const result = await TruthPulseAPI.uploadFile(file);
+        const item = Array.isArray(result.results) ? result.results[0] : result;
+        if (!item || !item.success) throw new Error(item?.message || "Upload failed.");
+        state.pendingFiles.push({ _id: id, type: item.type, filename: item.filename, extracted: item.extracted });
+        updatePendingFileCard(id, "ready ✓");
+      } catch (err) {
+        updatePendingFileCard(id, `failed: ${err.message}`);
+      }
     }
   }
 
@@ -294,7 +308,7 @@
     if (!message) return;
 
     const fileNames = state.pendingFiles.map((f) => f.filename);
-    const fileContext = [...state.pendingFiles];
+    const fileContext = state.pendingFiles.map(({ type, filename, extracted }) => ({ type, filename, extracted }));
 
     appendMessage("user", message, fileNames);
     input.value = "";
@@ -338,9 +352,9 @@
   uploadVideoBtn?.addEventListener("click", () => videoFileInput?.click());
   uploadDocBtn?.addEventListener("click", () => docFileInput?.click());
 
-  imageFileInput?.addEventListener("change", () => { if (imageFileInput.files[0]) handleFileChosen(imageFileInput.files[0]); imageFileInput.value = ""; });
-  videoFileInput?.addEventListener("change", () => { if (videoFileInput.files[0]) handleFileChosen(videoFileInput.files[0]); videoFileInput.value = ""; });
-  docFileInput?.addEventListener("change", () => { if (docFileInput.files[0]) handleFileChosen(docFileInput.files[0]); docFileInput.value = ""; });
+  imageFileInput?.addEventListener("change", () => { if (imageFileInput.files.length) handleFilesChosen(Array.from(imageFileInput.files)); imageFileInput.value = ""; });
+  videoFileInput?.addEventListener("change", () => { if (videoFileInput.files.length) handleFilesChosen(Array.from(videoFileInput.files)); videoFileInput.value = ""; });
+  docFileInput?.addEventListener("change", () => { if (docFileInput.files.length) handleFilesChosen(Array.from(docFileInput.files)); docFileInput.value = ""; });
 
   if (badge) {
     badge.title = "Chat requests use Ollama through the authenticated backend.";
