@@ -70,10 +70,55 @@
     getConversation(id) { return request(endpoint(endpoints.getConversation, { id })); },
     createConversation(data) { return request(endpoints.createConversation, { method: "POST", body: JSON.stringify(data) }); },
     deleteConversation(id) { return request(endpoint(endpoints.deleteConversation, { id }), { method: "DELETE" }); },
-    chat(data) {
-      console.log("[DEBUG] chat payload sent to backend:", JSON.stringify(data, null, 2));
-      return request(endpoints.chat, {
-        method: "POST", body: JSON.stringify(data), timeoutMs: 200000
+    chat(data, { onToken } = {}) {
+      return new Promise((resolve, reject) => {
+        const base = String(CONFIG.API_BASE_URL || "").replace(/\/+$/, "");
+        fetch(base + endpoints.chat, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "text/event-stream" },
+          body: JSON.stringify(data),
+          credentials: "include",
+          cache: "no-store"
+        }).then((response) => {
+          if (!response.ok) {
+            return response.json().catch(() => ({})).then((payload) => {
+              const error = new Error(payload?.message || `Request failed (${response.status}).`);
+              error.status = response.status;
+              error.code = payload?.code;
+              error.remaining = payload?.remaining;
+              error.dailyLimit = payload?.dailyLimit;
+              reject(error);
+            });
+          }
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let buf = "";
+          function pump() {
+            reader.read().then(({ done, value }) => {
+              if (done) return;
+              buf += decoder.decode(value, { stream: true });
+              const parts = buf.split("\n\n");
+              buf = parts.pop();
+              for (const part of parts) {
+                const eventMatch = part.match(/^event: (\w+)/m);
+                const dataMatch = part.match(/^data: (.+)$/m);
+                if (!eventMatch || !dataMatch) continue;
+                try {
+                  const payload = JSON.parse(dataMatch[1]);
+                  if (eventMatch[1] === "token" && typeof onToken === "function") onToken(payload.token);
+                  if (eventMatch[1] === "done") resolve(payload);
+                  if (eventMatch[1] === "error") {
+                    const err = new Error(payload.message || "AI error.");
+                    err.code = payload.code;
+                    reject(err);
+                  }
+                } catch { /* skip */ }
+              }
+              pump();
+            }).catch(reject);
+          }
+          pump();
+        }).catch(reject);
       });
     },
     aiUsage() { return request(endpoints.aiUsage); },
