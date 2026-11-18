@@ -58,6 +58,14 @@
     }
   }
 
+  function renderMarkdown(text) {
+    if (typeof marked === "undefined") return document.createTextNode(text);
+    const div = el("div", "markdown-body");
+    div.innerHTML = marked.parse(text, { breaks: true, gfm: true });
+    div.querySelectorAll("a").forEach((a) => { a.target = "_blank"; a.rel = "noopener noreferrer"; });
+    return div;
+  }
+
   function appendMessage(role, text, fileContext = []) {
     const row = el("div", `message-row ${role === "user" ? "user" : "ai"}`);
     const bubble = el("div", "message-bubble");
@@ -80,7 +88,7 @@
       });
       bubble.appendChild(fileList);
     }
-    if (text) bubble.appendChild(document.createTextNode(text));
+    if (text) bubble.appendChild(role === "assistant" ? renderMarkdown(text) : document.createTextNode(text));
     row.appendChild(bubble);
     messagesEl.appendChild(row);
     scrollBottom();
