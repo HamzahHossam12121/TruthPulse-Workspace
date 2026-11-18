@@ -101,7 +101,7 @@
             buf = parts.pop();
             for (const part of parts) {
               const eventMatch = part.match(/^event: (\w+)/m);
-              const dataMatch = part.match(/^data: (.+)$/ms);
+              const dataMatch = part.match(/^data: (.+)$/m);
               if (!eventMatch || !dataMatch) continue;
               try {
                 const payload = JSON.parse(dataMatch[1]);
