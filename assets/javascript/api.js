@@ -70,7 +70,7 @@
     getConversation(id) { return request(endpoint(endpoints.getConversation, { id })); },
     createConversation(data) { return request(endpoints.createConversation, { method: "POST", body: JSON.stringify(data) }); },
     deleteConversation(id) { return request(endpoint(endpoints.deleteConversation, { id }), { method: "DELETE" }); },
-    chat(data, { onToken } = {}) {
+    chat(data, { onToken, onThink } = {}) {
       return new Promise((resolve, reject) => {
         const base = String(CONFIG.API_BASE_URL || "").replace(/\/+$/, "");
         fetch(base + endpoints.chat, {
@@ -106,6 +106,7 @@
                 try {
                   const payload = JSON.parse(dataMatch[1]);
                   if (eventMatch[1] === "token" && typeof onToken === "function") onToken(payload.token);
+                  if (eventMatch[1] === "think" && typeof onThink === "function") onThink(payload.token);
                   if (eventMatch[1] === "done") resolve(payload);
                   if (eventMatch[1] === "error") {
                     const err = new Error(payload.message || "AI error.");

@@ -398,17 +398,32 @@
     setSending(true);
     showTyping();
 
-    // Create the AI bubble early so we can stream tokens into it
     let aiBubble = null;
+    let thinkContent = null;
     let markdownDiv = null;
     let accumulated = "";
+    let thinkAccumulated = "";
 
     function initAIBubble() {
       document.getElementById("typingRow")?.remove();
       const row = el("div", "message-row ai");
       aiBubble = el("div", "message-bubble");
+
+      // Collapsible think block (hidden until first think token)
+      const thinkWrap = el("div", "think-block");
+      thinkWrap.hidden = true;
+      const thinkToggle = el("button", "think-toggle");
+      thinkToggle.type = "button";
+      thinkToggle.innerHTML = '<i class="bi bi-lightbulb" aria-hidden="true"></i> Thinking <i class="bi bi-chevron-down think-chevron" aria-hidden="true"></i>';
+      thinkContent = el("div", "think-content");
+      thinkToggle.addEventListener("click", () => {
+        const open = thinkWrap.classList.toggle("open");
+        thinkToggle.querySelector(".think-chevron").className = `bi ${open ? "bi-chevron-up" : "bi-chevron-down"} think-chevron`;
+      });
+      thinkWrap.append(thinkToggle, thinkContent);
+
       markdownDiv = el("div", "markdown-body");
-      aiBubble.appendChild(markdownDiv);
+      aiBubble.append(thinkWrap, markdownDiv);
       row.appendChild(aiBubble);
       messagesEl.appendChild(row);
       scrollBottom();
@@ -418,6 +433,14 @@
       const result = await TruthPulseAPI.chat(
         { message, conversationId: state.currentId, fileContext },
         {
+          onThink(token) {
+            if (!aiBubble) initAIBubble();
+            const thinkWrap = aiBubble.querySelector(".think-block");
+            if (thinkWrap) thinkWrap.hidden = false;
+            thinkAccumulated += token;
+            if (thinkContent) thinkContent.textContent = thinkAccumulated;
+            scrollBottom();
+          },
           onToken(token) {
             if (!aiBubble) initAIBubble();
             accumulated += token;
