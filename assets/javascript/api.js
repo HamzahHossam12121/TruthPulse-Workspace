@@ -93,27 +93,38 @@
           const reader = response.body.getReader();
           const decoder = new TextDecoder();
           let buf = "";
+          let resolved = false;
+
+          function processChunk(chunk) {
+            buf += chunk;
+            const parts = buf.split("\n\n");
+            buf = parts.pop();
+            for (const part of parts) {
+              const eventMatch = part.match(/^event: (\w+)/m);
+              const dataMatch = part.match(/^data: (.+)$/ms);
+              if (!eventMatch || !dataMatch) continue;
+              try {
+                const payload = JSON.parse(dataMatch[1]);
+                if (eventMatch[1] === "token" && typeof onToken === "function") onToken(payload.token);
+                if (eventMatch[1] === "think" && typeof onThink === "function") onThink(payload.token);
+                if (eventMatch[1] === "done" && !resolved) { resolved = true; resolve(payload); }
+                if (eventMatch[1] === "error" && !resolved) {
+                  resolved = true;
+                  const err = new Error(payload.message || "AI error.");
+                  err.code = payload.code;
+                  reject(err);
+                }
+              } catch { /* skip */ }
+            }
+          }
+
           function pump() {
             reader.read().then(({ done, value }) => {
-              if (done) return;
-              buf += decoder.decode(value, { stream: true });
-              const parts = buf.split("\n\n");
-              buf = parts.pop();
-              for (const part of parts) {
-                const eventMatch = part.match(/^event: (\w+)/m);
-                const dataMatch = part.match(/^data: (.+)$/m);
-                if (!eventMatch || !dataMatch) continue;
-                try {
-                  const payload = JSON.parse(dataMatch[1]);
-                  if (eventMatch[1] === "token" && typeof onToken === "function") onToken(payload.token);
-                  if (eventMatch[1] === "think" && typeof onThink === "function") onThink(payload.token);
-                  if (eventMatch[1] === "done") resolve(payload);
-                  if (eventMatch[1] === "error") {
-                    const err = new Error(payload.message || "AI error.");
-                    err.code = payload.code;
-                    reject(err);
-                  }
-                } catch { /* skip */ }
+              if (value) processChunk(decoder.decode(value, { stream: !done }));
+              if (done) {
+                if (buf.trim()) processChunk("");
+                if (!resolved) reject(new Error("Stream ended without a response."));
+                return;
               }
               pump();
             }).catch(reject);
@@ -121,6 +132,7 @@
           pump();
         }).catch(reject);
       });
+    },
     },
     aiUsage() { return request(endpoints.aiUsage); },
     sendMessage(id, data) { return request(endpoint(endpoints.sendMessage, { id }), { method: "POST", body: JSON.stringify(data) }); },
