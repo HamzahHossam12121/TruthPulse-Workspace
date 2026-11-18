@@ -133,7 +133,6 @@
         }).catch(reject);
       });
     },
-    },
     aiUsage() { return request(endpoints.aiUsage); },
     sendMessage(id, data) { return request(endpoint(endpoints.sendMessage, { id }), { method: "POST", body: JSON.stringify(data) }); },
     status() { return request(endpoints.status); },
