@@ -73,7 +73,7 @@
     chat(data) {
       console.log("[DEBUG] chat payload sent to backend:", JSON.stringify(data, null, 2));
       return request(endpoints.chat, {
-        method: "POST", body: JSON.stringify(data), timeoutMs: 70000
+        method: "POST", body: JSON.stringify(data), timeoutMs: 200000
       });
     },
     aiUsage() { return request(endpoints.aiUsage); },
