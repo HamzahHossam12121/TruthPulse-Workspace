@@ -46,8 +46,6 @@
           ? payload.message : `Request failed (${response.status}).`);
         error.status = response.status;
         error.code = payload && typeof payload === "object" ? payload.code : undefined;
-        error.remaining = payload && typeof payload === "object" ? payload.remaining : undefined;
-        error.dailyLimit = payload && typeof payload === "object" ? payload.dailyLimit : undefined;
         throw error;
       }
       return payload;
@@ -85,8 +83,6 @@
               const error = new Error(payload?.message || `Request failed (${response.status}).`);
               error.status = response.status;
               error.code = payload?.code;
-              error.remaining = payload?.remaining;
-              error.dailyLimit = payload?.dailyLimit;
               reject(error);
             });
           }
@@ -133,7 +129,6 @@
         }).catch(reject);
       });
     },
-    aiUsage() { return request(endpoints.aiUsage); },
     sendMessage(id, data) { return request(endpoint(endpoints.sendMessage, { id }), { method: "POST", body: JSON.stringify(data) }); },
     status() { return request(endpoints.status); },
     uploadFile(file) {

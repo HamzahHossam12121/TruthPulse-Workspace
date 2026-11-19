@@ -14,7 +14,6 @@ const CONFIG = {
     getConversation: "/api/conversations/{id}",
     deleteConversation: "/api/conversations/{id}",
     chat: "/api/chat",
-    aiUsage: "/api/ai/usage",
     sendMessage: "/api/conversations/{id}/messages",
     uploadFile: "/api/upload",
     status: "/",
