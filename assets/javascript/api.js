@@ -103,6 +103,7 @@
                 const payload = JSON.parse(dataMatch[1]);
                 if (eventMatch[1] === "token" && typeof onToken === "function") onToken(payload.token);
                 if (eventMatch[1] === "think" && typeof onThink === "function") onThink(payload.token);
+                if (eventMatch[1] === "status" && typeof onStatus === "function") onStatus(payload.message);
                 if (eventMatch[1] === "done" && !resolved) { resolved = true; resolve(payload); }
                 if (eventMatch[1] === "error" && !resolved) {
                   resolved = true;

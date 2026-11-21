@@ -417,6 +417,14 @@
       const result = await TruthPulseAPI.chat(
         { message, conversationId: state.currentId, fileContext },
         {
+          onStatus(statusText) {
+            if (!aiBubble) initAIBubble();
+            const thinkWrap = aiBubble.querySelector(".think-block");
+            if (thinkWrap) thinkWrap.hidden = false;
+            thinkAccumulated += `\n[Status: ${statusText}]`;
+            if (thinkContent) thinkContent.textContent = thinkAccumulated;
+            scrollBottom();
+          },
           onThink(token) {
             if (!aiBubble) initAIBubble();
             const thinkWrap = aiBubble.querySelector(".think-block");
